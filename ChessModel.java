@@ -109,3 +109,4 @@ public class ChessModel implements IChessModel {
 
 		}
 
+}
