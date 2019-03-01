@@ -38,9 +38,9 @@ public class Knight extends ChessPiece {
 						(move.toRow - move.fromRow) == -3)))
 			valid = false;
 
-//		if((move.toRow - move.fromRow) - (move.toColumn - move.fromColumn) != 1 &&
-//				(move.toRow - move.fromRow) - (move.toColumn - move.fromColumn) != -1)
-//			valid = false;
+		//check to see if the other spot has a piece for the same player
+		if (super.sameTeam(move, board))
+			valid = false;
 
         // More code is needed
 		return valid;
