@@ -24,6 +24,11 @@ public class Rook extends ChessPiece {
 		move.toColumn - move.fromColumn == 0))
         // More code is needed
 			valid = false;
+		
+		//check to see if the other spot has a piece for the same player
+		if (super.sameTeam(move, board))
+			valid = false;
+
 
         return valid;
 
