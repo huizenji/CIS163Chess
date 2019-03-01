@@ -19,6 +19,10 @@ public class King extends ChessPiece {
 		move.toColumn - move.fromColumn > 1 ||
 		move.toColumn - move.fromColumn < -1)
 			valid = false;
+		
+		//check to see if the other spot has a piece for the same player
+		if (super.sameTeam(move, board))
+			valid = false;
 
 		//allow castle
 		if(move.fromColumn == 4)
