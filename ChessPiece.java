@@ -24,4 +24,17 @@ public abstract class ChessPiece implements IChessPiece {
 
         return false;
     }
+    
+    public boolean sameTeam(Move move, IChessPiece[][] board){
+
+		//check to see if the other spot has a piece
+		if (board[move.toRow][move.toColumn] != null)
+			//if it has a piece, is it the same team
+			if ((board[move.toRow][move.toColumn].player() ==
+				board[move.fromRow][move.fromColumn].player()))
+				return true;
+			;
+
+		return false;
+	}
 }
