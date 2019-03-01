@@ -15,6 +15,11 @@ public class Pawn extends ChessPiece {
 
         boolean valid = true;
         // More code is needed
+        
+        //check to see if the other spot has a piece for the same player
+		if (super.sameTeam(move, board))
+			valid = false;
+        
         return valid;
     }
 }
