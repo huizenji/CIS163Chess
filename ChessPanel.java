@@ -28,7 +28,7 @@ public class ChessPanel extends JPanel {
     private int toRow;
     private int fromCol;
     private int toCol;
-    // declare other intance variables as needed
+    // declare other instance variables as needed
 
     private listener listener;
 
@@ -97,7 +97,7 @@ public class ChessPanel extends JPanel {
         }
     }
 
-    private void placeBlackPieces(int r, int c){
+    private void placeBlackPieces(int r, int c) {
         if (model.pieceAt(r, c).type().equals("Pawn")) {
             board[r][c] = new JButton(null, bPawn);
             board[r][c].addActionListener(listener);
@@ -151,8 +151,7 @@ public class ChessPanel extends JPanel {
             for (int c = 0; c < 8; c++)
                 if (model.pieceAt(r, c) == null)
                     board[r][c].setIcon(null);
-                else
-                if (model.pieceAt(r, c).player() == Player.WHITE) {
+                else if (model.pieceAt(r, c).player() == Player.WHITE) {
                     if (model.pieceAt(r, c).type().equals("Pawn"))
                         board[r][c].setIcon(wPawn);
 
@@ -171,10 +170,7 @@ public class ChessPanel extends JPanel {
                     if (model.pieceAt(r, c).type().equals("King"))
                         board[r][c].setIcon(wKing);
 
-                }
-
-                else
-                if (model.pieceAt(r, c).player() == Player.BLACK) {
+                } else if (model.pieceAt(r, c).player() == Player.BLACK) {
                     if (model.pieceAt(r, c).type().equals("Pawn"))
                         board[r][c].setIcon(bPawn);
 
@@ -213,11 +209,16 @@ public class ChessPanel extends JPanel {
                             toCol = c;
                             firstTurnFlag = true;
                             Move m = new Move(fromRow, fromCol, toRow, toCol);
-                            if ((model.isValidMove(m)) == true) {
-                                model.move(m);
-                                displayBoard();
+                            if ((model.isValidMove(m))) {
+                                if (model.pieceAt(fromRow, fromCol)
+                                        .player() == model.currentPlayer()) {
+                                    model.move(m);
+                                    displayBoard();
+                                    model.setNextPlayer();
+                                }
                             }
                         }
         }
     }
+
 }
