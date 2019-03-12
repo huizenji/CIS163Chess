@@ -2,30 +2,33 @@ package Project3;
 
 public abstract class ChessPiece implements IChessPiece {
 
-    private Player owner;
+	private boolean moved = false;
+	private Player owner;
 
-    protected ChessPiece(Player player) {
-        this.owner = player;
-    }
+	protected ChessPiece(Player player) {
+		this.owner = player;
+	}
 
-    public abstract String type();
+	public abstract String type();
 
-    public Player player() {
-        return owner;
-    }
+	public Player player() {
+		return owner;
+	}
 
-    public boolean isValidMove(Move move, IChessPiece[][] board) {
-        boolean valid = false;
+	public boolean isValidMove(Move move, IChessPiece[][] board) {
+		boolean valid = false;
 
-        //  THIS IS A START... More coding needed
+		//  THIS IS A START... More coding needed
+		
+		if (((move.fromRow == move.toRow) && (move.fromColumn == move.toColumn)) == false) {
 
-        if (((move.fromRow == move.toRow) && (move.fromColumn == move.toColumn)) == false)
-            return valid;
+			return valid;
+		}
 
-        return false;
-    }
-    
-    public boolean sameTeam(Move move, IChessPiece[][] board){
+		return false;
+	}
+
+	public boolean sameTeam(Move move, IChessPiece[][] board){
 
 		//check to see if the other spot has a piece
 		if (board[move.toRow][move.toColumn] != null)
@@ -36,5 +39,13 @@ public abstract class ChessPiece implements IChessPiece {
 			;
 
 		return false;
+	}
+
+	public boolean isMoved() {
+		return moved;
+	}
+
+	public void setMoved(boolean moved) {
+		this.moved = moved;
 	}
 }
