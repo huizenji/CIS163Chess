@@ -209,15 +209,20 @@ public class ChessPanel extends JPanel {
                             toCol = c;
                             firstTurnFlag = true;
                             Move m = new Move(fromRow, fromCol, toRow, toCol);
-                            if ((model.isValidMove(m))) {
+                            if ((model.isValidMove(m)))
                                 if (model.pieceAt(fromRow, fromCol)
-                                        .player() == model.currentPlayer()) {
+                                        .player() == model.currentPlayer())
+                                    if (!model.inCheck(model.currentPlayer())){
                                     model.move(m);
                                     displayBoard();
                                     model.setNextPlayer();
+                                    turn.setText(model.currentPlayer() + "'s turn");
+                                    if (model.inCheck(model.currentPlayer()))
+                                        JOptionPane.showMessageDialog(
+                                                null,
+                                                "You are in check!");
                                 }
                             }
-                        }
         }
     }
 
