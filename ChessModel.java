@@ -89,7 +89,8 @@ public class ChessModel implements IChessModel {
 		int toCol = 0;
 		for (int row = 0; row < board.length - 1; row++)
 			for (int col = 0; col < board[row].length - 1; col++)
-				if (pieceAt(row, col).type().equals("King"))
+				if (board[row][col] != null && pieceAt(row, col)
+						.type().equals("King"))
 					if (pieceAt(row, col).player() == currentPlayer()) {
 						toRow = row;
 						toCol = col;
