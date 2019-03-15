@@ -85,6 +85,23 @@ public class ChessModel implements IChessModel {
 
 	public boolean inCheck(Player p) {
 		boolean valid = false;
+		int toRow = 0;
+		int toCol = 0;
+		for (int row = 0; row < board.length - 1; row++)
+			for (int col = 0; col < board[row].length - 1; col++)
+				if (pieceAt(row, col).type().equals("King"))
+					if (pieceAt(row, col).player() == currentPlayer()) {
+						toRow = row;
+						toCol = col;
+					}
+
+		for (int row = 0; row < board.length; row++)
+			for (int col = 0; col < board[row].length; col++) {
+				Move move = new Move(row, col, toRow, toCol);
+				if (pieceAt(row, col).isValidMove(move, board))
+					valid = true;
+			}
+
 		return valid;
 	}
 
