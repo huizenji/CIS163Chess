@@ -14,8 +14,8 @@ public class Bishop extends ChessPiece {
 
 		boolean valid = false;
 
-		if(move.toRow - move.fromRow == move.toColumn-move.fromColumn||
-		 move.toRow-move.fromRow==(move.toColumn-move.fromColumn)*(-1))
+		if(Math.abs(move.toRow - move.fromRow) == 
+				Math.abs(move.toColumn-move.fromColumn))
 		valid = true;
 
 		//check to see if the other spot has a piece for the same player
