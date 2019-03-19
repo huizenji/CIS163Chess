@@ -105,19 +105,19 @@ public class ChessModel implements IChessModel {
 		boolean valid = false;
 		int toRow = 0;
 		int toCol = 0;
-		for (int row = 0; row < board.length - 1; row++)
-			for (int col = 0; col < board[row].length - 1; col++)
-				if (board[row][col] != null && pieceAt(row, col)
-						.type().equals("King"))
+		for (int row = 0; row < numRows(); row++)
+			for (int col = 0; col < numColumns(); col++)
+				if (board[row][col] != null && board[row][col].type()
+						.equals("King"))
 					if (pieceAt(row, col).player() == currentPlayer()) {
 						toRow = row;
 						toCol = col;
 					}
 
-		for (int row = 0; row < board.length; row++)
-			for (int col = 0; col < board[row].length; col++) {
+		for (int row = 0; row < numRows(); row++)
+			for (int col = 0; col < numColumns(); col++) {
 				Move move = new Move(row, col, toRow, toCol);
-				if (pieceAt(row, col).isValidMove(move, board))
+				if (board[row][col] != null && board[row][col].isValidMove(move, board))
 					valid = true;
 			}
 
