@@ -4,7 +4,12 @@ public class ChessModel implements IChessModel {
 	private IChessPiece[][] board;
 	private Player player;
 
+		private ArrayList<IChessPiece[][]> boards = new ArrayList<>();
+
 	// declare other instance variables as needed
+	//moveIndex controls the index value of the ArrayList for the saved
+	//board data.
+	private int moveIndex = 0;
 
 	public ChessModel() {
 		board = new IChessPiece[8][8];
@@ -56,6 +61,19 @@ public class ChessModel implements IChessModel {
 	}
 
 	public void move(Move move) {
+		
+//increment moveIndex for undo and redo
+		if(moveIndex < boards.size() - 1)
+			//must delete everything including current board to prevent
+			//double record of current board.
+			for(int i = 0; i < boards.size() - (2 + moveIndex); i++) {
+				//delete irrelevant moves
+				deleteMove();
+			}
+		moveIndex++;
+
+		//record current board
+		saveMove(board);
 
 		//Queen's side castle
 		if(pieceAt(move.fromRow, move.fromColumn).type().equals("King")
@@ -149,5 +167,35 @@ public class ChessModel implements IChessModel {
 		 *		i. check to see if that piece is in danger of being removed, if so, move a different piece.
 		 */
 
+	}
+	/******************************************************************
+	 * Add a new move to the game history. This saves the current game
+	 * board onto the end of an ArrayList, allowing access to older
+	 * moves and enabling an undo function if desired.
+	 *
+	 * @param board import and save the current board
+	 */
+	private void saveMove(IChessPiece[][] board){
+		//save the board to newboard
+		IChessPiece[][] newboard = new IChessPiece[8][8];
+			for(int r = 0; r < 8; r++)
+				for(int c = 0; c < 8; c++) {
+					newboard[r][c] = board[r][c];
+					if(board[r][c]!= null)
+						newboard[r][c].setMoved(board[r][c].isMoved());
+				}
+
+			boards.add(newboard);
+	}
+
+	/******************************************************************
+	 * Removes only the last element of the saved boards. This is
+	 * intended to be used on a loop to eliminate all recorded moves
+	 * after a backed up point: when a new move has been made, delete
+	 * the old game and continue from the new point
+	 */
+	private void deleteMove(){
+		if(!(boards.size()-1 <= 0))
+		boards.remove(boards.size()-1);
 	}
 }
