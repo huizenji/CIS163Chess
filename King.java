@@ -16,10 +16,8 @@ public class King extends ChessPiece {
 		boolean valid = true;
         // More code is needed
 
-		if(move.toRow - move.fromRow > 1 ||
-		move.toRow - move.fromRow < -1||
-		move.toColumn - move.fromColumn > 1 ||
-		move.toColumn - move.fromColumn < -1)
+		if(Math.abs(move.toRow - move.fromRow) > 1 ||
+		Math.abs(move.toColumn - move.fromColumn) > 1)
 			valid = false;
 
 		//Test for castle
