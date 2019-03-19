@@ -1,5 +1,7 @@
 package Project3;
 
+import java.util.ArrayList;
+
 public class ChessModel implements IChessModel {
 	private IChessPiece[][] board;
 	private Player player;
