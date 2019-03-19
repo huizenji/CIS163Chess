@@ -8,6 +8,7 @@ public class ChessPanel extends JPanel {
 
     private JButton[][] board;
     private ChessModel model;
+    private JLabel turn;
 
     private ImageIcon wRook;
     private ImageIcon wBishop;
@@ -35,6 +36,7 @@ public class ChessPanel extends JPanel {
     public ChessPanel() {
         model = new ChessModel();
         board = new JButton[model.numRows()][model.numColumns()];
+        turn = new JLabel(model.currentPlayer() + "'s turn");
         listener = new listener();
         createIcons();
 
@@ -59,6 +61,7 @@ public class ChessPanel extends JPanel {
         add(boardpanel, BorderLayout.WEST);
         boardpanel.setPreferredSize(new Dimension(600, 600));
         add(buttonpanel);
+        buttonpanel.add(turn);
         firstTurnFlag = true;
     }
 
@@ -211,8 +214,7 @@ public class ChessPanel extends JPanel {
                             Move m = new Move(fromRow, fromCol, toRow, toCol);
                             if ((model.isValidMove(m)))
                                 if (model.pieceAt(fromRow, fromCol)
-                                        .player() == model.currentPlayer())
-                                    if (!model.inCheck(model.currentPlayer())){
+                                        .player() == model.currentPlayer()) {
                                     model.move(m);
                                     displayBoard();
                                     model.setNextPlayer();
