@@ -35,4 +35,6 @@ public interface IChessPiece {
     boolean isValidMove(Move move, IChessPiece[][] board);
     
 	boolean isMoved();
+	
+	void setMoved(boolean moved);
 }
