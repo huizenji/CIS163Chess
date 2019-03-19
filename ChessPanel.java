@@ -32,12 +32,22 @@ public class ChessPanel extends JPanel {
     // declare other instance variables as needed
 
     private listener listener;
+    private JButton undoButton;
+    private JButton redoButton;
 
     public ChessPanel() {
         model = new ChessModel();
         board = new JButton[model.numRows()][model.numColumns()];
         turn = new JLabel(model.currentPlayer() + "'s turn");
         listener = new listener();
+
+        undoButton = new JButton("UNDO");
+        redoButton = new JButton("REDO");
+        undoButton.addActionListener(listener);
+        redoButton.addActionListener(listener);
+        undoButton.setEnabled(false);
+        redoButton.setEnabled(false);
+
         createIcons();
 
         JPanel boardpanel = new JPanel();
@@ -60,8 +70,13 @@ public class ChessPanel extends JPanel {
         }
         add(boardpanel, BorderLayout.WEST);
         boardpanel.setPreferredSize(new Dimension(600, 600));
-        add(buttonpanel);
+
         buttonpanel.add(turn);
+        buttonpanel.add(undoButton);
+        buttonpanel.add(redoButton);
+        add(buttonpanel, BorderLayout.NORTH);
+        buttonpanel.setPreferredSize(new Dimension(100, 200));
+
         firstTurnFlag = true;
     }
 
@@ -207,6 +222,7 @@ public class ChessPanel extends JPanel {
                             fromRow = r;
                             fromCol = c;
                             firstTurnFlag = false;
+                            board[r][c].setBorder(BorderFactory.createLineBorder(Color.black));
                         } else {
                             toRow = r;
                             toCol = c;
@@ -223,8 +239,18 @@ public class ChessPanel extends JPanel {
                                         JOptionPane.showMessageDialog(
                                                 null,
                                                 "You are in check!");
+                                    undoButton.setEnabled(true);
                                 }
                             }
+
+            if (event.getSource().equals(undoButton)){
+                model.undo();
+                redoButton.setEnabled(true);
+            }
+
+            if (event.getSource().equals(redoButton)){
+                model.redo();
+            }
         }
     }
 
