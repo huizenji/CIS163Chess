@@ -200,4 +200,42 @@ public class ChessModel implements IChessModel {
 		if(!(boards.size()-1 <= 0))
 		boards.remove(boards.size()-1);
 	}
+	
+	public void undo(){
+		//temporarily, do nothing if no moves are made
+		if(boards.size() == 1);
+		else {
+			//go to previous move
+			moveIndex--;
+
+			//load previous move
+			IChessPiece[][] temp = boards.get(moveIndex);
+			for (int r = 0; r < numRows(); r++)
+				for (int c = 0; c < numColumns(); c++) {
+					//copy selected move
+					temp[r][c] = boards.get(moveIndex)[r][c];
+					temp[r][c].setMoved(boards.get(moveIndex)[r][c].isMoved());
+				}
+			board = temp;
+		}
+	}
+
+	public void redo(){
+		//temporarily do nothing if request is higher than last move
+		if(boards.size() <= moveIndex);
+		else {
+			//go to next move
+			moveIndex++;
+
+			//load next move
+			IChessPiece[][] temp = boards.get(moveIndex);
+			for (int r = 0; r < numRows(); r++)
+				for (int c = 0; c < numColumns(); c++) {
+					//copy selected move
+					temp[r][c] = boards.get(moveIndex)[r][c];
+					temp[r][c].setMoved(boards.get(moveIndex)[r][c].isMoved());
+				}
+			board = temp;
+		}
+	}
 }
