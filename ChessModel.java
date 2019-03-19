@@ -68,7 +68,7 @@ public class ChessModel implements IChessModel {
 		if(moveIndex < boards.size() - 1)
 			//must delete everything including current board to prevent
 			//double record of current board.
-			for(int i = 0; i < boards.size() - (2 + moveIndex); i++) {
+			for(int i = 0; i < boards.size() - (moveIndex); i++) {
 				//delete irrelevant moves
 				deleteMove();
 			}
