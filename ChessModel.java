@@ -6,7 +6,7 @@ public class ChessModel implements IChessModel {
 	private IChessPiece[][] board;
 	private Player player;
 
-		private ArrayList<IChessPiece[][]> boards = new ArrayList<>();
+	private ArrayList<IChessPiece[][]> boards = new ArrayList<>();
 
 	// declare other instance variables as needed
 	//moveIndex controls the index value of the ArrayList for the saved
@@ -42,6 +42,9 @@ public class ChessModel implements IChessModel {
 		for (int i = 0; i < 8; i++) {
 			board[1][i] = new Pawn(Player.BLACK);
 		}
+
+		//Save the base board as first element in ArrayList
+		saveMove(board);
 	}
 
 	public boolean isComplete() {
@@ -63,7 +66,7 @@ public class ChessModel implements IChessModel {
 	}
 
 	public void move(Move move) {
-		
+
 //increment moveIndex for undo and redo
 		if(moveIndex < boards.size() - 1)
 			//must delete everything including current board to prevent
@@ -72,35 +75,35 @@ public class ChessModel implements IChessModel {
 				//delete irrelevant moves
 				deleteMove();
 			}
-		moveIndex++;
-
-		//record current board
-		saveMove(board);
 
 		//Queen's side castle
 		if(pieceAt(move.fromRow, move.fromColumn).type().equals("King")
 				&& move.fromColumn == 4 &&
 				pieceAt(move.fromRow, 0) != null){
-				if(!pieceAt(move.fromRow, 0).isMoved()
-				&& move.toColumn == 2){
-					board[move.fromRow][3] = board[move.fromRow][0];//move rook
-					board[move.fromRow][0] = null;
+			if(!pieceAt(move.fromRow, 0).isMoved()
+					&& move.toColumn == 2){
+				board[move.fromRow][3] = board[move.fromRow][0];//move rook
+				board[move.fromRow][0] = null;
+			}
 		}
-	}
 
 		//King's side castle
 		if(pieceAt(move.fromRow, move.fromColumn).type().equals("King")
 				&& move.fromColumn == 4 &&
 				pieceAt(move.fromRow, 7)!= null){
-				if(!pieceAt(move.fromRow, 7).isMoved()
-				&& move.toColumn == 6) {
-					board[move.fromRow][5] = board[move.fromRow][7];//move rook
-					board[move.fromRow][7] = null;
-				}
+			if(!pieceAt(move.fromRow, 7).isMoved()
+					&& move.toColumn == 6) {
+				board[move.fromRow][5] = board[move.fromRow][7];//move rook
+				board[move.fromRow][7] = null;
+			}
 		}
 
 		board[move.toRow][move.toColumn] = board[move.fromRow][move.fromColumn];
 		board[move.fromRow][move.fromColumn] = null;
+
+		//record current board
+		saveMove(board);
+		moveIndex++;
 	}
 
 	public boolean inCheck(Player p) {
@@ -180,14 +183,9 @@ public class ChessModel implements IChessModel {
 	private void saveMove(IChessPiece[][] board){
 		//save the board to newboard
 		IChessPiece[][] newboard = new IChessPiece[8][8];
-			for(int r = 0; r < 8; r++)
-				for(int c = 0; c < 8; c++) {
-					newboard[r][c] = board[r][c];
-					if(board[r][c]!= null)
-						newboard[r][c].setMoved(board[r][c].isMoved());
-				}
 
-			boards.add(newboard);
+		cloneBoard(newboard,board);
+		boards.add(newboard);
 	}
 
 	/******************************************************************
@@ -198,9 +196,9 @@ public class ChessModel implements IChessModel {
 	 */
 	private void deleteMove(){
 		if(!(boards.size()-1 <= 0))
-		boards.remove(boards.size()-1);
+			boards.remove(boards.size()-1);
 	}
-	
+
 	public void undo(){
 		//temporarily, do nothing if no moves are made
 		if(boards.size() == 1);
@@ -209,13 +207,9 @@ public class ChessModel implements IChessModel {
 			moveIndex--;
 
 			//load previous move
-			IChessPiece[][] temp = boards.get(moveIndex);
-			for (int r = 0; r < numRows(); r++)
-				for (int c = 0; c < numColumns(); c++) {
-					//copy selected move
-					temp[r][c] = boards.get(moveIndex)[r][c];
-					temp[r][c].setMoved(boards.get(moveIndex)[r][c].isMoved());
-				}
+			IChessPiece[][] temp = new IChessPiece[8][8];
+			cloneBoard(temp, boards.get(moveIndex));
+
 			board = temp;
 		}
 	}
@@ -228,14 +222,33 @@ public class ChessModel implements IChessModel {
 			moveIndex++;
 
 			//load next move
-			IChessPiece[][] temp = boards.get(moveIndex);
-			for (int r = 0; r < numRows(); r++)
-				for (int c = 0; c < numColumns(); c++) {
-					//copy selected move
-					temp[r][c] = boards.get(moveIndex)[r][c];
-					temp[r][c].setMoved(boards.get(moveIndex)[r][c].isMoved());
-				}
+			IChessPiece[][] temp = new IChessPiece[8][8];
+			cloneBoard(temp, boards.get(moveIndex));
+
 			board = temp;
 		}
+	}
+
+	private void cloneBoard(IChessPiece[][] copyTo, IChessPiece[][] copyFrom){
+
+		for(int r = 0; r < 8; r++)
+			for(int c = 0; c < 8; c++) {
+				if(copyFrom[r][c]!= null) {
+					if(copyFrom[r][c].type() == "Rook") {
+						copyTo[r][c] = new Rook(copyFrom[r][c].player());
+						copyTo[r][c].setMoved(copyFrom[r][c].isMoved());
+					}
+					if(copyFrom[r][c].type() == "King") {
+						copyTo[r][c] = new King(copyFrom[r][c].player());
+						copyTo[r][c].setMoved(copyFrom[r][c].isMoved());
+					}
+					if(copyFrom[r][c].type() == "Pawn") {
+						copyTo[r][c] = new Pawn(copyFrom[r][c].player());
+						copyTo[r][c].setMoved(copyFrom[r][c].isMoved());
+					}
+					else
+						copyTo[r][c] = copyFrom[r][c];
+				}
+			}
 	}
 }
