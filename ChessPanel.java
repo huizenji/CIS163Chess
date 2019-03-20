@@ -29,6 +29,8 @@ public class ChessPanel extends JPanel {
     private int toRow;
     private int fromCol;
     private int toCol;
+    private int numMoves;
+    private int numUndos;
     // declare other instance variables as needed
 
     private listener listener;
@@ -78,6 +80,8 @@ public class ChessPanel extends JPanel {
         buttonpanel.setPreferredSize(new Dimension(100, 200));
 
         firstTurnFlag = true;
+        numMoves = 0;
+        numUndos = 0;
     }
 
     private void setBackGroundColor(int r, int c) {
@@ -210,6 +214,18 @@ public class ChessPanel extends JPanel {
                 }
         }
         repaint();
+
+        if (numMoves > 0)
+            undoButton.setEnabled(true);
+        else
+            undoButton.setEnabled(false);
+
+        if (numUndos > 0)
+            redoButton.setEnabled(true);
+        else
+            redoButton.setEnabled(false);
+
+        turn.setText(model.currentPlayer() + "'s turn");
     }
 
     // inner class that represents action listener for buttons
@@ -232,25 +248,33 @@ public class ChessPanel extends JPanel {
                                 if (model.pieceAt(fromRow, fromCol)
                                         .player() == model.currentPlayer()) {
                                     model.move(m);
-                                    displayBoard();
+
+                                    numMoves++;
+                                    numUndos = 0;
+
                                     model.setNextPlayer();
-                                    turn.setText(model.currentPlayer() + "'s turn");
                                     if (model.inCheck(model.currentPlayer()))
                                         JOptionPane.showMessageDialog(
                                                 null,
                                                 "You are in check!");
-                                    undoButton.setEnabled(true);
                                 }
                             }
-
+            
             if (event.getSource().equals(undoButton)){
                 model.undo();
-                redoButton.setEnabled(true);
+                numUndos++;
+                numMoves--;
+                model.setNextPlayer();
             }
 
             if (event.getSource().equals(redoButton)){
                 model.redo();
+                numUndos--;
+                numMoves++;
+                model.setNextPlayer();
             }
+
+            displayBoard();
         }
     }
 
