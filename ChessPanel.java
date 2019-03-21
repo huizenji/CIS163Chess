@@ -52,9 +52,9 @@ public class ChessPanel extends JPanel {
 
         createIcons();
 
-        JPanel boardpanel = new JPanel();
-        JPanel buttonpanel = new JPanel();
-        boardpanel.setLayout(new GridLayout(model.numRows(), model.numColumns(), 1, 1));
+        JPanel boardPanel = new JPanel();
+        JPanel buttonPanel = new JPanel();
+        boardPanel.setLayout(new GridLayout(model.numRows(), model.numColumns(), 1, 1));
 
         for (int r = 0; r < model.numRows(); r++) {
             for (int c = 0; c < model.numColumns(); c++) {
@@ -67,17 +67,17 @@ public class ChessPanel extends JPanel {
                     placeBlackPieces(r, c);
 
                 setBackGroundColor(r, c);
-                boardpanel.add(board[r][c]);
+                boardPanel.add(board[r][c]);
             }
         }
-        add(boardpanel, BorderLayout.WEST);
-        boardpanel.setPreferredSize(new Dimension(600, 600));
+        add(boardPanel, BorderLayout.WEST);
+        boardPanel.setPreferredSize(new Dimension(600, 600));
 
-        buttonpanel.add(turn);
-        buttonpanel.add(undoButton);
-        buttonpanel.add(redoButton);
-        add(buttonpanel, BorderLayout.NORTH);
-        buttonpanel.setPreferredSize(new Dimension(100, 200));
+        buttonPanel.add(turn);
+        buttonPanel.add(undoButton);
+        buttonPanel.add(redoButton);
+        add(buttonPanel, BorderLayout.NORTH);
+        buttonPanel.setPreferredSize(new Dimension(100, 200));
 
         firstTurnFlag = true;
         numMoves = 0;
@@ -253,13 +253,19 @@ public class ChessPanel extends JPanel {
                                     numUndos = 0;
 
                                     model.setNextPlayer();
+
+//                                    if (model.isComplete()) {
+//                                        JOptionPane.showMessageDialog(
+//                                                null,
+//                                                "Checkmate!");
+//                                    }
                                     if (model.inCheck(model.currentPlayer()))
                                         JOptionPane.showMessageDialog(
                                                 null,
                                                 "You are in check!");
-                                }
-                            }
-            
+                                    }
+                        }
+
             if (event.getSource().equals(undoButton)){
                 model.undo();
                 numUndos++;
