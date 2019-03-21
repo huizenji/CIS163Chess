@@ -238,7 +238,6 @@ public class ChessPanel extends JPanel {
                             fromRow = r;
                             fromCol = c;
                             firstTurnFlag = false;
-                            board[r][c].setBorder(BorderFactory.createLineBorder(Color.black));
                         } else {
                             toRow = r;
                             toCol = c;
@@ -254,16 +253,18 @@ public class ChessPanel extends JPanel {
 
                                     model.setNextPlayer();
 
-//                                    if (model.isComplete()) {
-//                                        JOptionPane.showMessageDialog(
-//                                                null,
-//                                                "Checkmate!");
-//                                    }
+                                    if (model.isComplete()) {
+                                        JOptionPane.showMessageDialog(
+                                                null,
+                                                "Checkmate! " + model.currentPlayer() + " wins!");
+                                        break;
+                                    }
+
                                     if (model.inCheck(model.currentPlayer()))
                                         JOptionPane.showMessageDialog(
                                                 null,
-                                                "You are in check!");
-                                    }
+                                                model.currentPlayer() + " is in check!");
+                                }
                         }
 
             if (event.getSource().equals(undoButton)){
