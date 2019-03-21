@@ -99,8 +99,8 @@ public class ChessModel implements IChessModel {
             //try to block threatening piece (just move every piece everywhere)
             for (int row = 0; row < board.length; row++)
                 for (int col = 0; col < board[row].length; col++)
-                    for (int toRow = 0; row < board.length; row++) {
-                        for (int toCol = 0; col < board[row].length; col++) {
+                    for (int toRow = 0; toRow < board.length; toRow++) {
+                        for (int toCol = 0; toCol < board[row].length; toCol++) {
                             Move move = new Move(row, col, toRow, toCol);
                             if (pieceAt(row, col) != null)
                                 if (pieceAt(row, col).isValidMove(move, board)) {
