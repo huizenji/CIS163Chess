@@ -57,38 +57,42 @@ public class ChessModel implements IChessModel {
 
             for (int row = 0; row < board.length - 1; row++)
                 for (int col = 0; col < board[row].length - 1; col++)
-                    if (pieceAt(row, col).type().equals("King")) {
-                        kingRow = row;
-                        kingCol = col;
-                    }
+                    if (pieceAt(row, col) != null)
+                        if (pieceAt(row, col).type().equals("King")) {
+                            kingRow = row;
+                            kingCol = col;
+                        }
             //try to move King
             for (int row = 0; row < board.length - 1; row++) {
                 for (int col = 0; col < board[row].length - 1; col++) {
                     Move move = new Move(kingRow, kingCol, row, col);
-                    if (pieceAt(kingRow, kingCol).isValidMove(move, board)) {
-                        if (!stillInCheck(move))
-                            return false;
-                    }
+                    if (pieceAt(row, col) != null)
+                        if (pieceAt(kingRow, kingCol).isValidMove(move, board)) {
+                            if (!stillInCheck(move))
+                                return false;
+                        }
                 }
             }
             //find threatening piece
             for (int row = 0; row < board.length; row++)
                 for (int col = 0; col < board[row].length; col++) {
                     Move move = new Move(row, col, kingRow, kingCol);
-                    if (pieceAt(row, col).isValidMove(move, board)) {
-                        enemyCol = col;
-                        enemyRow = row;
-                    }
+                    if (pieceAt(row, col) != null)
+                        if (pieceAt(row, col).isValidMove(move, board)) {
+                            enemyCol = col;
+                            enemyRow = row;
+                        }
                 }
 
             //try to take threatening piece
             for (int row = 0; row < board.length; row++)
                 for (int col = 0; col < board[row].length; col++) {
                     Move move = new Move(row, col, enemyRow, enemyCol);
-                    if (pieceAt(row, col).isValidMove(move, board)) {
-                        if (!stillInCheck(move))
-                            return false;
-                    }
+                    if (pieceAt(row, col) != null)
+                        if (pieceAt(row, col).isValidMove(move, board)) {
+                            if (!stillInCheck(move))
+                                return false;
+                        }
                 }
 
 
@@ -98,14 +102,15 @@ public class ChessModel implements IChessModel {
                     for (int toRow = 0; row < board.length; row++) {
                         for (int toCol = 0; col < board[row].length; col++) {
                             Move move = new Move(row, col, toRow, toCol);
-                            if (pieceAt(row, col).isValidMove(move, board)) {
-                                if (!stillInCheck(move))
-                                    return false;
+                            if (pieceAt(row, col) != null)
+                                if (pieceAt(row, col).isValidMove(move, board)) {
+                                    if (!stillInCheck(move))
+                                        return false;
                                 }
-                            }
                         }
-            return true;
                     }
+            return true;
+        }
         return false;
 
     }
@@ -139,35 +144,37 @@ public class ChessModel implements IChessModel {
     public void move(Move move) {
 
 //increment moveIndex for undo and redo
-        if(moveIndex < boards.size() - 1)
+        if (moveIndex < boards.size() - 1)
             //must delete everything including current board to prevent
             //double record of current board.
-            for(int i = 0; i < boards.size() - (moveIndex); i++) {
+            for (int i = 0; i < boards.size() - (moveIndex); i++) {
                 //delete irrelevant moves
                 deleteMove();
             }
 
         //Queen's side castle
-        if(pieceAt(move.fromRow, move.fromColumn).type().equals("King")
-                && move.fromColumn == 4 &&
-                pieceAt(move.fromRow, 0) != null){
-            if(!pieceAt(move.fromRow, 0).isMoved()
-                    && move.toColumn == 2){
-                board[move.fromRow][3] = board[move.fromRow][0];//move rook
-                board[move.fromRow][0] = null;
+        if (pieceAt(move.fromRow, move.fromColumn) != null)
+            if (pieceAt(move.fromRow, move.fromColumn).type().equals("King")
+                    && move.fromColumn == 4 &&
+                    pieceAt(move.fromRow, 0) != null) {
+                if (!pieceAt(move.fromRow, 0).isMoved()
+                        && move.toColumn == 2) {
+                    board[move.fromRow][3] = board[move.fromRow][0];//move rook
+                    board[move.fromRow][0] = null;
+                }
             }
-        }
 
         //King's side castle
-        if(pieceAt(move.fromRow, move.fromColumn).type().equals("King")
-                && move.fromColumn == 4 &&
-                pieceAt(move.fromRow, 7)!= null){
-            if(!pieceAt(move.fromRow, 7).isMoved()
-                    && move.toColumn == 6) {
-                board[move.fromRow][5] = board[move.fromRow][7];//move rook
-                board[move.fromRow][7] = null;
+        if (pieceAt(move.fromRow, move.fromColumn) != null)
+            if (pieceAt(move.fromRow, move.fromColumn).type().equals("King")
+                    && move.fromColumn == 4 &&
+                    pieceAt(move.fromRow, 7) != null) {
+                if (!pieceAt(move.fromRow, 7).isMoved()
+                        && move.toColumn == 6) {
+                    board[move.fromRow][5] = board[move.fromRow][7];//move rook
+                    board[move.fromRow][7] = null;
+                }
             }
-        }
 
         board[move.toRow][move.toColumn] = board[move.fromRow][move.fromColumn];
         board[move.fromRow][move.fromColumn] = null;
@@ -244,6 +251,7 @@ public class ChessModel implements IChessModel {
          */
 
     }
+
     /******************************************************************
      * Add a new move to the game history. This saves the current game
      * board onto the end of an ArrayList, allowing access to older
@@ -251,11 +259,11 @@ public class ChessModel implements IChessModel {
      *
      * @param board import and save the current board
      */
-    private void saveMove(IChessPiece[][] board){
+    private void saveMove(IChessPiece[][] board) {
         //save the board to newboard
         IChessPiece[][] newboard = new IChessPiece[8][8];
 
-        cloneBoard(newboard,board);
+        cloneBoard(newboard, board);
         boards.add(newboard);
     }
 
@@ -265,14 +273,14 @@ public class ChessModel implements IChessModel {
      * after a backed up point: when a new move has been made, delete
      * the old game and continue from the new point
      */
-    private void deleteMove(){
-        if(!(boards.size()-1 <= 0))
-            boards.remove(boards.size()-1);
+    private void deleteMove() {
+        if (!(boards.size() - 1 <= 0))
+            boards.remove(boards.size() - 1);
     }
 
-    public void undo(){
+    public void undo() {
         //temporarily, do nothing if no moves are made
-        if(boards.size() == 1);
+        if (boards.size() == 1) ;
         else {
             //go to previous move
             moveIndex--;
@@ -285,9 +293,9 @@ public class ChessModel implements IChessModel {
         }
     }
 
-    public void redo(){
+    public void redo() {
         //temporarily do nothing if request is higher than last move
-        if(boards.size() <= moveIndex);
+        if (boards.size() <= moveIndex) ;
         else {
             //go to next move
             moveIndex++;
@@ -300,24 +308,23 @@ public class ChessModel implements IChessModel {
         }
     }
 
-    private void cloneBoard(IChessPiece[][] copyTo, IChessPiece[][] copyFrom){
+    private void cloneBoard(IChessPiece[][] copyTo, IChessPiece[][] copyFrom) {
 
-        for(int r = 0; r < 8; r++)
-            for(int c = 0; c < 8; c++) {
-                if(copyFrom[r][c]!= null) {
-                    if(copyFrom[r][c].type() == "Rook") {
+        for (int r = 0; r < 8; r++)
+            for (int c = 0; c < 8; c++) {
+                if (copyFrom[r][c] != null) {
+                    if (copyFrom[r][c].type() == "Rook") {
                         copyTo[r][c] = new Rook(copyFrom[r][c].player());
                         copyTo[r][c].setMoved(copyFrom[r][c].isMoved());
                     }
-                    if(copyFrom[r][c].type() == "King") {
+                    if (copyFrom[r][c].type() == "King") {
                         copyTo[r][c] = new King(copyFrom[r][c].player());
                         copyTo[r][c].setMoved(copyFrom[r][c].isMoved());
                     }
-                    if(copyFrom[r][c].type() == "Pawn") {
+                    if (copyFrom[r][c].type() == "Pawn") {
                         copyTo[r][c] = new Pawn(copyFrom[r][c].player());
                         copyTo[r][c].setMoved(copyFrom[r][c].isMoved());
-                    }
-                    else
+                    } else
                         copyTo[r][c] = copyFrom[r][c];
                 }
             }
