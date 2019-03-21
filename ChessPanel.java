@@ -226,6 +226,18 @@ public class ChessPanel extends JPanel {
             redoButton.setEnabled(false);
 
         turn.setText(model.currentPlayer() + "'s turn");
+
+        if (model.inCheck(model.currentPlayer())) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    model.currentPlayer() + " is in check!");
+        }
+
+        if (model.isComplete()) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Checkmate! " + model.currentPlayer() + " wins!");
+        }
     }
 
     // inner class that represents action listener for buttons
@@ -252,18 +264,6 @@ public class ChessPanel extends JPanel {
                                     numUndos = 0;
 
                                     model.setNextPlayer();
-
-                                    if (model.isComplete()) {
-                                        JOptionPane.showMessageDialog(
-                                                null,
-                                                "Checkmate! " + model.currentPlayer() + " wins!");
-                                        break;
-                                    }
-
-                                    if (model.inCheck(model.currentPlayer()))
-                                        JOptionPane.showMessageDialog(
-                                                null,
-                                                model.currentPlayer() + " is in check!");
                                 }
                         }
 
