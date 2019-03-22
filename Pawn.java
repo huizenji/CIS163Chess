@@ -38,7 +38,8 @@ public class Pawn extends ChessPiece {
 				valid = false;
 
 			//check for a piece of any kind in front and prevent movement
-			if(board[move.fromRow - 1][move.toColumn] != null
+			if((board[move.fromRow - 1][move.toColumn] != null||
+					board[move.fromRow -2][move.toColumn]!=null)
 					&& move.toColumn == move.fromColumn)
 				valid = false;
 
@@ -70,8 +71,9 @@ public class Pawn extends ChessPiece {
 				valid = false;
 
 			//check for a piece of any kind in front and prevent movement
-			if(board[move.fromRow + 1][move.toColumn] != null &&
-			move.toColumn == move.fromColumn)
+			if((board[move.fromRow + 1][move.toColumn] != null||
+					board[move.fromRow + 2][move.toColumn]!=null)
+							&& move.toColumn == move.fromColumn)
 				valid = false;
 
 			//normal movements
