@@ -47,7 +47,7 @@ public class ChessModel implements IChessModel {
         saveMove(board);
     }
 
-    public boolean isComplete() {
+   public boolean isComplete() {
 
         if (inCheck(currentPlayer())) {
             int kingRow = 1;
@@ -55,33 +55,39 @@ public class ChessModel implements IChessModel {
             int enemyRow = 1;
             int enemyCol = 1;
 
+            //find king's location
             for (int row = 0; row < numRows(); row++)
                 for (int col = 0; col < numColumns(); col++)
                     if (pieceAt(row, col) != null)
-                        if (pieceAt(row, col).type().equals("King")) {
-                            kingRow = row;
-                            kingCol = col;
-                        }
+                        if (pieceAt(row, col).type().equals("King"))
+                            if (pieceAt(row, col).player() == currentPlayer()) {
+                                kingRow = row;
+                                kingCol = col;
+                                break;
+                            }
+
             //try to move King
             for (int row = 0; row < numRows(); row++) {
                 for (int col = 0; col < numColumns(); col++) {
                     Move move = new Move(kingRow, kingCol, row, col);
                     if (pieceAt(row, col) != null)
-                        if (pieceAt(kingRow, kingCol).isValidMove(move, board)) {
+                        if (pieceAt(kingRow, kingCol).isValidMove(move, board)) 
                             if (!stillInCheck(move))
                                 return false;
-                        }
                 }
             }
+            
             //find threatening piece
             for (int row = 0; row < numRows(); row++)
                 for (int col = 0; col < numColumns(); col++) {
                     Move move = new Move(row, col, kingRow, kingCol);
                     if (pieceAt(row, col) != null)
-                        if (pieceAt(row, col).isValidMove(move, board)) {
-                            enemyCol = col;
-                            enemyRow = row;
-                        }
+                        if (pieceAt(row, col).player() != currentPlayer())
+                            if (pieceAt(row, col).isValidMove(move, board)) {
+                                enemyCol = col;
+                                enemyRow = row;
+                                break;
+                            }
                 }
 
             //try to take threatening piece
@@ -89,26 +95,23 @@ public class ChessModel implements IChessModel {
                 for (int col = 0; col < numColumns(); col++) {
                     Move move = new Move(row, col, enemyRow, enemyCol);
                     if (pieceAt(row, col) != null)
-                        if (pieceAt(row, col).isValidMove(move, board)) {
+                        if (pieceAt(row, col).isValidMove(move, board)) 
                             if (!stillInCheck(move))
                                 return false;
-                        }
                 }
-
 
             //try to block threatening piece (just move every piece everywhere)
             for (int row = 0; row < numRows(); row++)
                 for (int col = 0; col < numColumns(); col++)
-                    for (int toRow = 0; toRow < numRows(); toRow++) {
+                    for (int toRow = 0; toRow < numRows(); toRow++) 
                         for (int toCol = 0; toCol < numColumns(); toCol++) {
                             Move move = new Move(row, col, toRow, toCol);
                             if (pieceAt(row, col) != null)
-                                if (pieceAt(row, col).isValidMove(move, board)) {
-                                    if (!stillInCheck(move))
-                                        return false;
-                                }
+                                if (pieceAt(row, col).isValidMove(move, board))
+                                    if (pieceAt(row, col).player() == currentPlayer()) 
+                                        if (!stillInCheck(move))
+                                            return false;
                         }
-                    }
             return true;
         }
         return false;
