@@ -227,12 +227,6 @@ public class ChessPanel extends JPanel {
 
         turn.setText(model.currentPlayer() + "'s turn");
 
-        if (model.inCheck(model.currentPlayer())) {
-            JOptionPane.showMessageDialog(
-                    null,
-                    model.currentPlayer() + " is in check!");
-        }
-
         if (model.isComplete()) {
             JOptionPane.showMessageDialog(
                     null,
@@ -264,6 +258,12 @@ public class ChessPanel extends JPanel {
                                     numUndos = 0;
 
                                     model.setNextPlayer();
+
+                                    if (model.inCheck(model.currentPlayer())) {
+                                        JOptionPane.showMessageDialog(
+                                                null,
+                                                model.currentPlayer() + " is in check!");
+                                    }
                                 }
                         }
 
@@ -279,6 +279,11 @@ public class ChessPanel extends JPanel {
                 numUndos--;
                 numMoves++;
                 model.setNextPlayer();
+                if (model.inCheck(model.currentPlayer())) {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            model.currentPlayer() + " is in check!");
+                }
             }
 
             displayBoard();
