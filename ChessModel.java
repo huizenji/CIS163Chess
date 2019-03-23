@@ -236,6 +236,16 @@ public class ChessModel implements IChessModel {
     }
 
     public void AI() {
+
+        if (inCheck(Player.BLACK))
+            getOutOfCheck();
+        if (!inCheck(Player.BLACK))
+            attemptToPutIntoCheck();
+        if (inDanger())
+            attemptToRemoveFromDanger();
+        if (!inDanger())
+            moveAPiece();
+
         /*
          * Write a simple AI set of rules in the following order.
          * a. Check to see if you are in check.
@@ -253,6 +263,46 @@ public class ChessModel implements IChessModel {
          *		i. check to see if that piece is in danger of being removed, if so, move a different piece.
          */
 
+    }
+
+    public void getOutOfCheck(){
+
+        // move the king
+            // in check?
+
+        // block the piece
+            // in check?
+
+    }
+
+    public void attemptToPutIntoCheck(){
+
+        // locate enemy king
+
+        // move every piece everywhere
+
+    }
+
+    public void attemptToRemoveFromDanger(){
+
+        // scan board for white piece
+            // scan board for black piece
+                // can white move onto black?
+                    // find a place to move the black
+    }
+
+    public void moveAPiece(){
+
+        // find a black piece (emphasis on pawns?)
+            // try to move that piece towards king
+                // is it in danger?
+                    // retreat
+                // move
+    }
+
+    public boolean inDanger(){
+
+        return false;
     }
 
     /******************************************************************
