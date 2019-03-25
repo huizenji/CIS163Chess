@@ -9,6 +9,7 @@ public class ChessPanel extends JPanel {
     private JButton[][] board;
     private ChessModel model;
     private JLabel turn;
+    private JLabel enableAI;
 
     private ImageIcon wRook;
     private ImageIcon wBishop;
@@ -31,6 +32,7 @@ public class ChessPanel extends JPanel {
     private int toCol;
     private int numMoves;
     private int numUndos;
+    private int useAI;
     // declare other instance variables as needed
 
     private listener listener;
@@ -41,6 +43,14 @@ public class ChessPanel extends JPanel {
         model = new ChessModel();
         board = new JButton[model.numRows()][model.numColumns()];
         turn = new JLabel(model.currentPlayer() + "'s turn");
+
+        useAI = JOptionPane.showConfirmDialog(null, "Enable AI?",
+                "Opponent", JOptionPane.YES_NO_OPTION);
+        if (useAI == 0)
+            enableAI = new JLabel("AI: ENABLED");
+        else
+            enableAI = new JLabel("AI: DISABLED");
+
         listener = new listener();
 
         undoButton = new JButton("UNDO");
@@ -76,6 +86,7 @@ public class ChessPanel extends JPanel {
         buttonPanel.add(turn);
         buttonPanel.add(undoButton);
         buttonPanel.add(redoButton);
+        buttonPanel.add(enableAI);
         add(buttonPanel, BorderLayout.NORTH);
         buttonPanel.setPreferredSize(new Dimension(100, 200));
 
@@ -228,10 +239,13 @@ public class ChessPanel extends JPanel {
         turn.setText(model.currentPlayer() + "'s turn");
 
         if (model.isComplete()) {
+            model.setNextPlayer();
             JOptionPane.showMessageDialog(
                     null,
                     "Checkmate! " + model.currentPlayer() + " wins!");
+            model.setNextPlayer();
         }
+
     }
 
     // inner class that represents action listener for buttons
@@ -251,30 +265,40 @@ public class ChessPanel extends JPanel {
                             Move m = new Move(fromRow, fromCol, toRow, toCol);
                             if ((model.isValidMove(m)))
                                 if (model.pieceAt(fromRow, fromCol)
-                                        .player() == model.currentPlayer()) {
-                                    model.move(m);
+                                        .player() == model.currentPlayer())
+                                    if (model.getStatus() != GUIcodes.Checkmate) {
+                                        model.move(m);
 
-                                    numMoves++;
-                                    numUndos = 0;
+                                        numMoves++;
+                                        numUndos = 0;
 
-                                    model.setNextPlayer();
+                                        model.setNextPlayer();
 
-                                    if (model.inCheck(model.currentPlayer())) {
-                                        JOptionPane.showMessageDialog(
-                                                null,
-                                                model.currentPlayer() + " is in check!");
+                                        if (model.inCheck(model.currentPlayer())) {
+                                            JOptionPane.showMessageDialog(
+                                                    null,
+                                                    model.currentPlayer() + " is in check!");
+                                        }
+
+                                        if (useAI == 0) {
+                                            model.AI();
+                                            numMoves++;
+                                            numUndos = 0;
+                                        }
                                     }
-                                }
                         }
 
-            if (event.getSource().equals(undoButton)){
+            if (event.getSource().equals(undoButton)) {
                 model.undo();
                 numUndos++;
                 numMoves--;
                 model.setNextPlayer();
+                if (model.getStatus() == GUIcodes.Checkmate) {
+                    model.setStatus(GUIcodes.NoMessage);
+                }
             }
 
-            if (event.getSource().equals(redoButton)){
+            if (event.getSource().equals(redoButton)) {
                 model.redo();
                 numUndos--;
                 numMoves++;
@@ -284,6 +308,7 @@ public class ChessPanel extends JPanel {
                             null,
                             model.currentPlayer() + " is in check!");
                 }
+
             }
 
             displayBoard();
