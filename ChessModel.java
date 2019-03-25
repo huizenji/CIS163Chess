@@ -237,14 +237,26 @@ public class ChessModel implements IChessModel {
 
     public void AI() {
 
+        //first try to get out of check (if in check)
         if (inCheck(Player.BLACK))
             getOutOfCheck();
+
+        //try to put opponent in check
         if (!inCheck(Player.BLACK))
             attemptToPutIntoCheck();
-        if (inDanger())
-            attemptToRemoveFromDanger();
-        if (!inDanger())
-            moveAPiece();
+
+        //move an endangered piece
+        for (int allyRow = 0; allyRow < numRows(); allyRow++)
+            for (int allyCol = 0; allyCol < numColumns(); allyCol++)
+                if (pieceAt(allyRow, allyCol) != null)
+                    if (pieceAt(allyRow, allyCol).player() == currentPlayer()) {
+                        // can white move onto black?
+                        if (inDanger(allyRow, allyCol))
+                            attemptToRemoveFromDanger(allyRow, allyCol);
+                    }
+
+        //if no obvious threat or chance to check, move a piece
+        moveAPiece();
 
         /*
          * Write a simple AI set of rules in the following order.
@@ -265,43 +277,125 @@ public class ChessModel implements IChessModel {
 
     }
 
-    public void getOutOfCheck(){
+    public void getOutOfCheck() {
+        int kingRow = 1;
+        int kingCol = 1;
+        int enemyRow = 1;
+        int enemyCol = 1;
 
-        // move the king
-            // in check?
+        //find King
+        for (int row = 0; row < numRows(); row++)
+            for (int col = 0; col < numColumns(); col++)
+                if (pieceAt(row, col) != null)
+                    if (pieceAt(row, col).type().equals("King"))
+                        if (pieceAt(row, col).player() == currentPlayer()) {
+                            kingRow = row;
+                            kingCol = col;
+                            break;
+                        }
 
-        // block the piece
-            // in check?
+        //try to move King
+        for (int row = 0; row < numRows(); row++) {
+            for (int col = 0; col < numColumns(); col++) {
+                Move move = new Move(kingRow, kingCol, row, col);
+                if (pieceAt(row, col) != null)
+                    if (pieceAt(kingRow, kingCol).isValidMove(move, board))
+                        if (!stillInCheck(move))
+                            move(move);
+                        
+            }
+        }
 
+        //find threatening piece
+        for (int row = 0; row < numRows(); row++)
+            for (int col = 0; col < numColumns(); col++) {
+                Move move = new Move(row, col, kingRow, kingCol);
+                if (pieceAt(row, col) != null)
+                    if (pieceAt(row, col).player() != currentPlayer())
+                        if (pieceAt(row, col).isValidMove(move, board)) {
+                            enemyCol = col;
+                            enemyRow = row;
+                            break;
+                        }
+            }
+
+        //try to take threatening piece
+        for (int row = 0; row < numRows(); row++)
+            for (int col = 0; col < numColumns(); col++) {
+                Move move = new Move(row, col, enemyRow, enemyCol);
+                if (pieceAt(row, col) != null)
+                    if (pieceAt(row, col).isValidMove(move, board))
+                        if (!stillInCheck(move))
+                            move(move);
+            }
+
+        //try to block threatening piece (just move every piece everywhere)
+        for (int row = 0; row < numRows(); row++)
+            for (int col = 0; col < numColumns(); col++)
+                for (int toRow = 0; toRow < numRows(); toRow++)
+                    for (int toCol = 0; toCol < numColumns(); toCol++) {
+                        Move move = new Move(row, col, toRow, toCol);
+                        if (pieceAt(row, col) != null)
+                            if (pieceAt(row, col).isValidMove(move, board))
+                                if (pieceAt(row, col).player() == currentPlayer())
+                                    if (!stillInCheck(move))
+                                        move(move);
+                    }
     }
 
-    public void attemptToPutIntoCheck(){
+
+    public void attemptToPutIntoCheck() {
+        int kingRow = 0;
+        int kingCol = 0;
 
         // locate enemy king
+        for (int row = 0; row < numRows(); row++)
+            for (int col = 0; col < numColumns(); col++)
+                if (pieceAt(row, col) != null)
+                    if (pieceAt(row, col).type().equals("King"))
+                        if (pieceAt(row, col).player() != currentPlayer()) {
+                            kingRow = row;
+                            kingCol = col;
+                            break;
+                        }
 
         // move every piece everywhere
 
     }
 
-    public void attemptToRemoveFromDanger(){
+    public void attemptToRemoveFromDanger(int allyRow, int allyCol) {
+        for (int moveRow = 0; moveRow < numRows(); moveRow++)
+            for (int moveCol = 0; moveCol < numColumns(); moveCol++) {
+                Move newMove = new Move(allyRow, allyCol, moveRow, moveCol);
+                move(newMove);
+                if (inDanger(moveRow, moveCol))
+                    undo();
+                else
+                    break;
+            }
 
-        // scan board for white piece
-            // scan board for black piece
-                // can white move onto black?
-                    // find a place to move the black
     }
 
-    public void moveAPiece(){
+
+    public void moveAPiece() {
 
         // find a black piece (emphasis on pawns?)
-            // try to move that piece towards king
-                // is it in danger?
-                    // retreat
-                // move
+        // try to move that piece towards king
+        // is it in danger?
+        // retreat
+        // move
     }
 
-    public boolean inDanger(){
-
+    public boolean inDanger(int pieceRow, int pieceCol) {
+        for (int enemyRow = 0; enemyRow < numRows(); enemyRow++)
+            for (int enemyCol = 0; enemyCol < numColumns(); enemyCol++)
+                if (pieceAt(enemyRow, enemyCol) != null)
+                    if (pieceAt(enemyRow, enemyCol).player() != currentPlayer()) {
+                        Move move = new Move(enemyRow, enemyCol, pieceRow, pieceCol);
+                        if (isValidMove(move)) {
+                            return true;
+                        }
+                    }
         return false;
     }
 
