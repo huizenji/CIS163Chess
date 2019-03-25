@@ -482,7 +482,7 @@ public void moveAPiece() {
         for (int enemyRow = 0; enemyRow < numRows(); enemyRow++)
             for (int enemyCol = 0; enemyCol < numColumns(); enemyCol++)
                 if (pieceAt(enemyRow, enemyCol) != null)
-                    if (pieceAt(enemyRow, enemyCol).player() != Player.BLACK) {
+                    if (pieceAt(enemyRow, enemyCol).player() != pieceAt(pieceRow, pieceCol).player()) {
                         Move move = new Move(enemyRow, enemyCol, pieceRow, pieceCol);
                         if (isValidMove(move)) {
                             return true;
