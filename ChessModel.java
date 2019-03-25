@@ -25,6 +25,9 @@ public class ChessModel implements IChessModel {
     /** index value of the ArrayList for the saved board data **/
     private int moveIndex = 0;
 
+    /** variable to tell whether AI has been enabled**/
+    private int useAI = 0;
+
     /******************************************************************
      * The default constructor: places the pieces, sets the Player,
      * sets the status, and saves the starting board
@@ -273,6 +276,7 @@ public class ChessModel implements IChessModel {
     }
 
     public void AI() {
+        useAI = 1;
 
         //first try to get out of check (if in check)
         if (inCheck(Player.BLACK))
@@ -399,9 +403,9 @@ public class ChessModel implements IChessModel {
                             Move move = new Move(row, col, toRow, toCol);
                             if (pieceAt(row, col) != null)
                                 if (pieceAt(row, col).isValidMove(move, board))
-                                    if (pieceAt(row, col).player() == Player.BLACK) {
+                                    if (pieceAt(row, col).player() == Player.BLACK && !stillInCheck(move)) {
                                         move(move);
-                                        if (inCheck(Player.WHITE) || isComplete())
+                                        if (inCheck(Player.WHITE))
                                             setPlayer(Player.WHITE);
                                         else
                                             undo();
@@ -415,17 +419,19 @@ public class ChessModel implements IChessModel {
             for (int moveCol = 0; moveCol < numColumns(); moveCol++)
                 if (currentPlayer() == Player.BLACK) {
                     Move newMove = new Move(allyRow, allyCol, moveRow, moveCol);
-                    move(newMove);
-                    if (inDanger(moveRow, moveCol))
-                        undo();
-                    else
-                        setPlayer(Player.WHITE);
+                    if (isValidMove(newMove)&& !stillInCheck(newMove)) {
+                        move(newMove);
+                        if (inDanger(moveRow, moveCol))
+                            undo();
+                        else
+                            setPlayer(Player.WHITE);
+                    }
                 }
 
     }
 
 
-public void moveAPiece() {
+    public void moveAPiece() {
         int dangerEnemyRow = 0;
         int dangerEnemyCol = 0;
 
@@ -440,15 +446,16 @@ public void moveAPiece() {
                                     if (pieceAt(allyRow, allyCol) != null)
                                         if (pieceAt(allyRow, allyCol).player() == player.BLACK) {
                                             Move move = new Move(allyRow, allyCol, enemyRow, enemyCol);
-                                            if (isValidMove(move)) {
+                                            if (isValidMove(move) && currentPlayer() == player.BLACK && !stillInCheck(move)) {
                                                 move(move);
                                                 //will taking their piece put any of our pieces in danger?
-                                                if (inDanger(enemyRow, enemyCol))
-                                                    undo();
-                                                else
+                                                if (inDanger(enemyRow, enemyCol)) {
                                                     dangerEnemyRow = enemyRow;
-                                                dangerEnemyCol = enemyCol;
-                                                break;
+                                                    dangerEnemyCol = enemyCol;
+                                                    undo();
+                                                }
+                                                else
+                                                    setPlayer(Player.WHITE);;
 
                                             }
                                         }
@@ -458,11 +465,11 @@ public void moveAPiece() {
         for (int allyRow = 0; allyRow < numRows(); allyRow++)
             for (int allyCol = 0; allyCol < numColumns(); allyCol++)
                 if (pieceAt(allyRow, allyCol) != null)
-                    if (pieceAt(allyRow, allyCol).player() == player.WHITE) {
+                    if (pieceAt(allyRow, allyCol).player() == player.BLACK) {
                         Move move = new Move(allyRow, allyCol, dangerEnemyRow, dangerEnemyCol);
-                        if (isValidMove(move)) {
+                        if (isValidMove(move)&& currentPlayer() == player.BLACK && !stillInCheck(move)) {
                             move(move);
-                            break;
+                            setPlayer(Player.WHITE);
                         }
                     }
 
@@ -481,13 +488,13 @@ public void moveAPiece() {
                                     for (int enemyRow = 0; enemyRow < numRows(); enemyRow++)
                                         for (int enemyCol = 0; enemyCol < numColumns(); enemyCol++)
                                             if (pieceAt(enemyRow, enemyCol) != null)
-                                                if (pieceAt(enemyRow, enemyCol).player() == player.WHITE) {
+                                                if (pieceAt(enemyRow, enemyCol).player() == player.WHITE && currentPlayer() == player.BLACK && !stillInCheck(move)) {
                                                     //undo and continue moving pieces if enemy is not in danger
                                                     move(move);
                                                     if (!inDanger(enemyRow, enemyCol))
                                                         undo();
                                                     else
-                                                        break;
+                                                        setPlayer(Player.WHITE);
                                                 }
                                 }
                             }
@@ -502,12 +509,12 @@ public void moveAPiece() {
                         for (int toRow = 0; toRow < numRows(); toRow++)
                             for (int toCol = 0; toCol < numColumns(); toCol++) {
                                 Move move = new Move(allyRow, allyCol, toRow, toCol);
-                                if (isValidMove(move)) {
+                                if (isValidMove(move) && currentPlayer() == player.BLACK && !stillInCheck(move)) {
                                     move(move);
                                     if (inDanger(toRow, toCol))
                                         undo();
                                     else
-                                        break;
+                                        setPlayer(Player.WHITE);
 
                                 }
                             }
@@ -605,7 +612,7 @@ public void moveAPiece() {
                 }
             }
     }
-    
+
     public GUIcodes getStatus() {
         return status;
     }
