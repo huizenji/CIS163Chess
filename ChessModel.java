@@ -2,17 +2,33 @@ package Project3;
 
 import java.util.ArrayList;
 
+/**********************************************************************
+ * A class that stores the board and rules of chess
+ *
+ * @author David Butz, Lauren Freeman, Jillian Huizenga
+ * Date: 3/26/2019
+ *********************************************************************/
 public class ChessModel implements IChessModel {
+
+    /** A two-dimensional array of IChessPiece **/
     private IChessPiece[][] board;
+
+    /** A Player that stores the current player **/
     private Player player;
 
+    /** A GUIcodes that stores the board status **/
+    private GUIcodes status;
+
+    /** An ArrayList of two-dimensional IChessPiece arrays **/
     private ArrayList<IChessPiece[][]> boards = new ArrayList<>();
 
-    // declare other instance variables as needed
-    //moveIndex controls the index value of the ArrayList for the saved
-    //board data.
+    /** index value of the ArrayList for the saved board data **/
     private int moveIndex = 0;
 
+    /******************************************************************
+     * The default constructor: places the pieces, sets the Player,
+     * sets the status, and saves the starting board
+     *****************************************************************/
     public ChessModel() {
         board = new IChessPiece[8][8];
         player = Player.WHITE;
@@ -43,11 +59,17 @@ public class ChessModel implements IChessModel {
             board[1][i] = new Pawn(Player.BLACK);
         }
 
+        status = GUIcodes.NoMessage;
+
         //Save the base board as first element in ArrayList
         saveMove(board);
     }
 
-   public boolean isComplete() {
+    /******************************************************************
+     * Returns whether or not the game is over by checkmate
+     * @return a boolean that indicates if the game is over or not
+     *****************************************************************/
+    public boolean isComplete() {
 
         if (inCheck(currentPlayer())) {
             int kingRow = 1;
@@ -60,7 +82,8 @@ public class ChessModel implements IChessModel {
                 for (int col = 0; col < numColumns(); col++)
                     if (pieceAt(row, col) != null)
                         if (pieceAt(row, col).type().equals("King"))
-                            if (pieceAt(row, col).player() == currentPlayer()) {
+                            if (pieceAt(row, col).player() ==
+                                    currentPlayer()) {
                                 kingRow = row;
                                 kingCol = col;
                                 break;
@@ -71,22 +94,24 @@ public class ChessModel implements IChessModel {
                 for (int col = 0; col < numColumns(); col++) {
                     Move move = new Move(kingRow, kingCol, row, col);
                     if (pieceAt(row, col) != null)
-                        if (pieceAt(kingRow, kingCol).isValidMove(move, board)) 
+                        if (pieceAt(kingRow, kingCol)
+                                .isValidMove(move, board))
                             if (!stillInCheck(move))
                                 return false;
                 }
             }
-            
+
             //find threatening piece
             for (int row = 0; row < numRows(); row++)
                 for (int col = 0; col < numColumns(); col++) {
                     Move move = new Move(row, col, kingRow, kingCol);
                     if (pieceAt(row, col) != null)
-                        if (pieceAt(row, col).player() != currentPlayer())
-                            if (pieceAt(row, col).isValidMove(move, board)) {
+                        if (pieceAt(row, col).player() !=
+                                currentPlayer())
+                            if (pieceAt(row, col)
+                                    .isValidMove(move, board)) {
                                 enemyCol = col;
                                 enemyRow = row;
-                                break;
                             }
                 }
 
@@ -95,29 +120,40 @@ public class ChessModel implements IChessModel {
                 for (int col = 0; col < numColumns(); col++) {
                     Move move = new Move(row, col, enemyRow, enemyCol);
                     if (pieceAt(row, col) != null)
-                        if (pieceAt(row, col).isValidMove(move, board)) 
+                        if (pieceAt(row, col).isValidMove(move, board))
                             if (!stillInCheck(move))
                                 return false;
                 }
 
-            //try to block threatening piece (just move every piece everywhere)
+            //try to block threatening piece (move everywhere)
             for (int row = 0; row < numRows(); row++)
                 for (int col = 0; col < numColumns(); col++)
-                    for (int toRow = 0; toRow < numRows(); toRow++) 
-                        for (int toCol = 0; toCol < numColumns(); toCol++) {
-                            Move move = new Move(row, col, toRow, toCol);
+                    for (int toRow = 0; toRow < numRows(); toRow++)
+                        for (int toCol = 0; toCol < numColumns();
+                             toCol++) {
+                            Move move = new Move(row, col, toRow,
+                                    toCol);
                             if (pieceAt(row, col) != null)
-                                if (pieceAt(row, col).isValidMove(move, board))
-                                    if (pieceAt(row, col).player() == currentPlayer()) 
+                                if (pieceAt(row, col).isValidMove
+                                        (move, board))
+                                    if (pieceAt(row, col).player()
+                                            == currentPlayer())
                                         if (!stillInCheck(move))
                                             return false;
                         }
+            status = GUIcodes.Checkmate;
             return true;
         }
         return false;
-
     }
 
+    /******************************************************************
+     * A method that returns whether or not a Player is still in check
+     * after a temporary move (used in isComplete())
+     * @param move a Move object
+     * @return a boolean that indicates if a Player will remain in
+     *          check
+     *****************************************************************/
     public boolean stillInCheck(Move move) {
         move(move);
         if (!inCheck(currentPlayer())) {
@@ -127,6 +163,7 @@ public class ChessModel implements IChessModel {
         undo();
         return true;
     }
+
 
     public boolean isValidMove(Move move) {
         boolean valid = false;
