@@ -568,4 +568,16 @@ public void moveAPiece() {
                 }
             }
     }
+    
+    public GUIcodes getStatus() {
+        return status;
+    }
+
+    public void setStatus(GUIcodes status) {
+        this.status = status;
+    }
+
+    public void setPlayer(Player p) {
+        player = p;
+    }
 }
