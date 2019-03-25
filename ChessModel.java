@@ -388,13 +388,94 @@ public class ChessModel implements IChessModel {
     }
 
 
-    public void moveAPiece() {
+public void moveAPiece() {
+        int dangerEnemyRow = 0;
+        int dangerEnemyCol = 0;
 
-        // find a black piece (emphasis on pawns?)
-        // try to move that piece towards king
-        // is it in danger?
-        // retreat
-        // move
+        //are any opponent pieces in danger?
+        for (int enemyRow = 0; enemyRow < numRows(); enemyRow++)
+            for (int enemyCol = 0; enemyCol < numColumns(); enemyCol++)
+                if (pieceAt(enemyRow, enemyCol) != null)
+                    if (pieceAt(enemyRow, enemyCol).player() == player.WHITE)
+                        if (inDanger(enemyRow, enemyCol)) {
+                            for (int allyRow = 0; allyRow < numRows(); allyRow++)
+                                for (int allyCol = 0; allyCol < numColumns(); allyCol++)
+                                    if (pieceAt(allyRow, allyCol) != null)
+                                        if (pieceAt(allyRow, allyCol).player() == player.BLACK) {
+                                            Move move = new Move(allyRow, allyCol, enemyRow, enemyCol);
+                                            if (isValidMove(move)) {
+                                                move(move);
+                                                //will taking their piece put any of our pieces in danger?
+                                                if (inDanger(enemyRow, enemyCol))
+                                                    undo();
+                                                else
+                                                    dangerEnemyRow = enemyRow;
+                                                dangerEnemyCol = enemyCol;
+                                                break;
+
+                                            }
+                                        }
+                        }
+
+        //take a risk if it's the only piece we can take
+        for (int allyRow = 0; allyRow < numRows(); allyRow++)
+            for (int allyCol = 0; allyCol < numColumns(); allyCol++)
+                if (pieceAt(allyRow, allyCol) != null)
+                    if (pieceAt(allyRow, allyCol).player() == player.WHITE) {
+                        Move move = new Move(allyRow, allyCol, dangerEnemyRow, dangerEnemyCol);
+                        if (isValidMove(move)) {
+                            move(move);
+                            break;
+                        }
+                    }
+
+        //try to put a white piece in danger
+        //find black piece to move
+        for (int allyRow = 0; allyRow < numRows(); allyRow++)
+            for (int allyCol = 0; allyCol < numColumns(); allyCol++)
+                if (pieceAt(allyRow, allyCol) != null)
+                    if (pieceAt(allyRow, allyCol).player() == player.BLACK) {
+                        //find a space to move to
+                        for (int toRow = 0; toRow < numRows(); toRow++)
+                            for (int toCol = 0; toCol < numColumns(); toCol++) {
+                                Move move = new Move(allyRow, allyCol, toRow, toCol);
+                                if (isValidMove(move)) {
+                                    //check if this move puts any enemy piece in danger
+                                    for (int enemyRow = 0; enemyRow < numRows(); enemyRow++)
+                                        for (int enemyCol = 0; enemyCol < numColumns(); enemyCol++)
+                                            if (pieceAt(enemyRow, enemyCol) != null)
+                                                if (pieceAt(enemyRow, enemyCol).player() == player.WHITE) {
+                                                    //undo and continue moving pieces if enemy is not in danger
+                                                    move(move);
+                                                    if (!inDanger(enemyRow, enemyCol))
+                                                        undo();
+                                                    else
+                                                        break;
+                                                }
+                                }
+                            }
+
+                    }
+        //just move a piece somewhere (that doesn't put it in danger)
+        for (int allyRow = 0; allyRow < numRows(); allyRow++)
+            for (int allyCol = 0; allyCol < numColumns(); allyCol++)
+                if (pieceAt(allyRow, allyCol) != null)
+                    if (pieceAt(allyRow, allyCol).player() == player.BLACK) {
+                        //find a space to move to
+                        for (int toRow = 0; toRow < numRows(); toRow++)
+                            for (int toCol = 0; toCol < numColumns(); toCol++) {
+                                Move move = new Move(allyRow, allyCol, toRow, toCol);
+                                if (isValidMove(move)) {
+                                    move(move);
+                                    if (inDanger(toRow, toCol))
+                                        undo();
+                                    else
+                                        break;
+
+                                }
+                            }
+                    }
+
     }
 
     public boolean inDanger(int pieceRow, int pieceCol) {
