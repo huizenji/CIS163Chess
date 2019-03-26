@@ -32,7 +32,7 @@ public class Bishop extends ChessPiece {
 				//and stop locations
 				for (int i = 1; i < move.toRow - move.fromRow; i++)
 					if (move.fromRow + i<=7 && move.fromColumn + i<=7)
-						if (board[move.fromRow + i][move.fromColumn + i]
+						if (board[move.fromRow + i][move.fromColumn +i]
 								!= null)
 							valid = false;
 			}
@@ -42,21 +42,21 @@ public class Bishop extends ChessPiece {
 				//check every space for a piece between start
 				//and stop locations
 				for (int i = 1; i < move.toRow - move.fromRow; i++)
-					if (move.fromRow + i <= 7 && move.fromColumn - i >= 0)
-						if (board[move.fromRow + i][move.fromColumn - i]
+					if (move.fromRow + i <=7 && move.fromColumn - i>=0)
+						if (board[move.fromRow + i][move.fromColumn -i]
 								!= null)
 							valid = false;
 			}
-		// Check movement from right to left	
+		// Check movement from right to left
 		} else {
 			//check for blocking elements in path to target location
 			//Check for movement from left toward right
 			if (move.toColumn > move.fromColumn) {
 				//check every space for a piece between start
 				//and stop locations
-				for (int i = 1; i < move.toColumn - move.fromColumn; i++)
-					if (move.fromRow - i >= 0 && move.fromColumn + i <= 7)
-						if (board[move.fromRow - i][move.fromColumn + i]
+				for (int i = 1; i < move.toColumn-move.fromColumn; i++)
+					if (move.fromRow - i >=0 && move.fromColumn + i<=7)
+						if (board[move.fromRow - i][move.fromColumn +i]
 								!= null)
 							valid = false;
 			}
@@ -66,9 +66,9 @@ public class Bishop extends ChessPiece {
 			if (move.toColumn < move.fromColumn) {
 				//check every space for a piece between start
 				//and stop locations
-				for (int i = 1; i < move.fromColumn - move.toColumn; i++)
-					if (move.fromRow - i >= 0 && move.fromColumn - i >= 0)
-						if (board[move.fromRow - i][move.fromColumn - i]
+				for (int i =1; i< move.fromColumn - move.toColumn; i++)
+					if (move.fromRow - i >=0 && move.fromColumn - i>=0)
+						if (board[move.fromRow - i][move.fromColumn -i]
 								!= null)
 							valid = false;
 			}
