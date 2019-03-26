@@ -1,5 +1,12 @@
 package Project3;
 
+/**********************************************************************
+ * A class that stores the information in, and the movement restriction
+ * of a pawn.
+ *
+ * @author David Butz, Lauren Freeman, Jillian Huizenga
+ * Date: 3/26/2019
+ *********************************************************************/
 public class Pawn extends ChessPiece {
 
 	public Pawn(Player player) {
