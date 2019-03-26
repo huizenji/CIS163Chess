@@ -170,11 +170,11 @@ public class ChessTest {
     @Test
     public void testInCheck() {
         ChessModel model = new ChessModel();
-        Move pawn = new Move(1, 5, 2, 5);
-        Move pawn2 = new Move(6, 4, 4, 4);
-        Move pawn3 = new Move(1, 6, 3, 6);
-        Move pawn4 = new Move(1, 3, 2, 3);
-        Move queen = new Move(7, 3, 3, 7);
+        Move pawn = new Move(6, 5, 5, 5);
+        Move pawn2 = new Move(1, 4, 3, 4);
+        Move pawn3 = new Move(6, 6, 4, 6);
+        Move pawn4 = new Move(6, 3, 5, 3);
+        Move queen = new Move(0, 3, 4, 7);
         model.move(pawn);
         model.move(pawn2);
         model.move(pawn3);
