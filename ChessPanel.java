@@ -33,6 +33,15 @@ public class ChessPanel extends JPanel {
     private int numMoves;
     private int numUndos;
     private int useAI;
+    /**
+     * the total number of rows on the chess board
+     **/
+    private final int NUM_ROWS = 8;
+
+    /**
+     * the total number of columns on the chess board
+     **/
+    private final int NUM_COLS = 8;
     // declare other instance variables as needed
 
     private listener listener;
@@ -41,7 +50,7 @@ public class ChessPanel extends JPanel {
 
     public ChessPanel() {
         model = new ChessModel();
-        board = new JButton[model.numRows()][model.numColumns()];
+        board = new JButton[NUM_ROWS][NUM_COLS];
         turn = new JLabel(model.currentPlayer() + "'s turn");
 
         useAI = JOptionPane.showConfirmDialog(null, "Enable AI?",
@@ -64,18 +73,19 @@ public class ChessPanel extends JPanel {
 
         JPanel boardPanel = new JPanel();
         JPanel buttonPanel = new JPanel();
-        boardPanel.setLayout(new GridLayout(model.numRows(),
-                model.numColumns(), 1, 1));
+        boardPanel.setLayout(new GridLayout(NUM_ROWS,
+                NUM_COLS, 1, 1));
 
-        for (int r = 0; r < model.numRows(); r++) {
-            for (int c = 0; c < model.numColumns(); c++) {
+        for (int r = 0; r < NUM_ROWS; r++) {
+            for (int c = 0; c < NUM_COLS; c++) {
                 if (model.pieceAt(r, c) == null) {
                     board[r][c] = new JButton("", null);
                     board[r][c].addActionListener(listener);
                 } else if (model.pieceAt(r, c).player() ==
                         Player.WHITE) {
                     placeWhitePieces(r, c);
-                } else if (model.pieceAt(r, c).player() == Player.BLACK)
+                } else if (model.pieceAt(r, c).player() ==
+                        Player.BLACK)
                     placeBlackPieces(r, c);
 
                 setBackGroundColor(r, c);
@@ -98,10 +108,11 @@ public class ChessPanel extends JPanel {
     }
 
     private void setBackGroundColor(int r, int c) {
-        if ((c % 2 == 1 && r % 2 == 0) || (c % 2 == 0 && r % 2 == 1)) {
+        if ((c % 2 == 1 && r % 2 == 0) ||
+                (c % 2 == 0 && r % 2 == 1)) {
             board[r][c].setBackground(Color.LIGHT_GRAY);
-        } else if ((c % 2 == 0 && r % 2 == 0) || (c % 2 == 1 &&
-                r % 2 == 1)) {
+        } else if ((c % 2 == 0 && r % 2 == 0) ||
+                (c % 2 == 1 && r % 2 == 1)) {
             board[r][c].setBackground(Color.WHITE);
         }
     }
@@ -256,8 +267,8 @@ public class ChessPanel extends JPanel {
     // inner class that represents action listener for buttons
     private class listener implements ActionListener {
         public void actionPerformed(ActionEvent event) {
-            for (int r = 0; r < model.numRows(); r++)
-                for (int c = 0; c < model.numColumns(); c++)
+            for (int r = 0; r < NUM_ROWS; r++)
+                for (int c = 0; c < NUM_COLS; c++)
                     if (board[r][c] == event.getSource())
                         if (firstTurnFlag == true) {
                             fromRow = r;
@@ -286,30 +297,32 @@ public class ChessPanel extends JPanel {
 
                                         model.setNextPlayer();
 
-                                        // in check?
+                                        //if appropriate
                                         displayCheckMessage();
 
-                                        // AI enabled?
+                                        //AI enabled?
                                         if (useAI == 0) {
                                             model.AI();
                                             numMoves++;
                                             numUndos = 0;
                                             displayCheckMessage();
+
                                         }
                                     }
-                                  // when game is over
+                                    // when game is over
                                 } else
                                     JOptionPane.showMessageDialog(
                                             null,
                                             "The game is over!");
-                             // cannot move into check
+
+                                // cannot move into check
                             } else
                                 JOptionPane.showMessageDialog(
                                         null,
                                         "You cannot move into check!");
                         }
 
-            // undo
+            // undo button
             if (event.getSource().equals(undoButton)) {
                 model.undo();
                 numUndos++;
@@ -318,10 +331,9 @@ public class ChessPanel extends JPanel {
                 if (model.getStatus() == GUIcodes.Checkmate) {
                     model.setStatus(GUIcodes.NoMessage);
                 }
-                displayCheckMessage();
             }
 
-            // redo
+            //redo button
             if (event.getSource().equals(redoButton)) {
                 model.redo();
                 numUndos--;
@@ -335,21 +347,21 @@ public class ChessPanel extends JPanel {
         }
     }
 
+
     private boolean valid(Move m) {
         if ((model.isValidMove(m)))
             if (model.pieceAt(fromRow, fromCol).player() == model
                     .currentPlayer())
-                    return true;
+                return true;
 
         return false;
     }
 
-    private void displayCheckMessage(){
+    private void displayCheckMessage() {
         if (model.inCheck(model.currentPlayer())) {
             JOptionPane.showMessageDialog(
-                            null,
-                            model.currentPlayer() + " is in check!");
+                    null,
+                    model.currentPlayer() + " is in check!");
         }
     }
-
 }
