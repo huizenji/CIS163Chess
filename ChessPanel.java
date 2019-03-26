@@ -75,8 +75,7 @@ public class ChessPanel extends JPanel {
                 } else if (model.pieceAt(r, c).player() ==
                         Player.WHITE) {
                     placeWhitePieces(r, c);
-                } else if (model.pieceAt(r, c).player() ==
-                        Player.BLACK)
+                } else if (model.pieceAt(r, c).player() == Player.BLACK)
                     placeBlackPieces(r, c);
 
                 setBackGroundColor(r, c);
@@ -99,11 +98,10 @@ public class ChessPanel extends JPanel {
     }
 
     private void setBackGroundColor(int r, int c) {
-        if ((c % 2 == 1 && r % 2 == 0) ||
-                (c % 2 == 0 && r % 2 == 1)) {
+        if ((c % 2 == 1 && r % 2 == 0) || (c % 2 == 0 && r % 2 == 1)) {
             board[r][c].setBackground(Color.LIGHT_GRAY);
-        } else if ((c % 2 == 0 && r % 2 == 0) ||
-                (c % 2 == 1 && r % 2 == 1)) {
+        } else if ((c % 2 == 0 && r % 2 == 0) || (c % 2 == 1 &&
+                r % 2 == 1)) {
             board[r][c].setBackground(Color.WHITE);
         }
     }
@@ -269,14 +267,18 @@ public class ChessPanel extends JPanel {
                             toRow = r;
                             toCol = c;
                             firstTurnFlag = true;
-                            Move m = new Move(fromRow, fromCol,
-                                    toRow, toCol);
-                            if ((model.isValidMove(m)))
-                                if (model.pieceAt(fromRow, fromCol)
-                                        .player() ==
-                                        model.currentPlayer())
-                                    if (model.getStatus() !=
-                                            GUIcodes.Checkmate) {
+                            Move m = new Move(fromRow, fromCol, toRow,
+                                    toCol);
+
+                            // cannot move into check
+                            if (!model.stillInCheck(m)) {
+
+                                // cannot move when game over
+                                if (model.getStatus() != GUIcodes
+                                        .Checkmate) {
+
+                                    // valid move, right player
+                                    if (valid(m)) {
                                         model.move(m);
 
                                         numMoves++;
@@ -284,24 +286,29 @@ public class ChessPanel extends JPanel {
 
                                         model.setNextPlayer();
 
-                                        if (model.inCheck(model
-                                                .currentPlayer())) {
-                                            JOptionPane
-                                                 .showMessageDialog(
-                                                 null,
-                                                 model.currentPlayer()
-                                                         + " is in " +
-                                                         "check!");
-                                        }
+                                        // in check?
+                                        displayCheckMessage();
 
+                                        // AI enabled?
                                         if (useAI == 0) {
                                             model.AI();
                                             numMoves++;
                                             numUndos = 0;
                                         }
                                     }
+                                  // when game is over
+                                } else
+                                    JOptionPane.showMessageDialog(
+                                            null,
+                                            "The game is over!");
+                             // cannot move into check
+                            } else
+                                JOptionPane.showMessageDialog(
+                                        null,
+                                        "You cannot move into check!");
                         }
 
+            // undo
             if (event.getSource().equals(undoButton)) {
                 model.undo();
                 numUndos++;
@@ -310,22 +317,37 @@ public class ChessPanel extends JPanel {
                 if (model.getStatus() == GUIcodes.Checkmate) {
                     model.setStatus(GUIcodes.NoMessage);
                 }
+                displayCheckMessage();
             }
 
+            // redo
             if (event.getSource().equals(redoButton)) {
                 model.redo();
                 numUndos--;
                 numMoves++;
                 model.setNextPlayer();
-                if (model.inCheck(model.currentPlayer())) {
-                    JOptionPane.showMessageDialog(
-                            null,
-                            model.currentPlayer() + " is in check!");
-                }
+                displayCheckMessage();
 
             }
 
             displayBoard();
+        }
+    }
+
+    private boolean valid(Move m) {
+        if ((model.isValidMove(m)))
+            if (model.pieceAt(fromRow, fromCol).player() == model
+                    .currentPlayer())
+                    return true;
+
+        return false;
+    }
+
+    private void displayCheckMessage(){
+        if (model.inCheck(model.currentPlayer())) {
+            JOptionPane.showMessageDialog(
+                            null,
+                            model.currentPlayer() + " is in check!");
         }
     }
 
