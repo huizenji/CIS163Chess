@@ -64,16 +64,19 @@ public class ChessPanel extends JPanel {
 
         JPanel boardPanel = new JPanel();
         JPanel buttonPanel = new JPanel();
-        boardPanel.setLayout(new GridLayout(model.numRows(), model.numColumns(), 1, 1));
+        boardPanel.setLayout(new GridLayout(model.numRows(),
+                model.numColumns(), 1, 1));
 
         for (int r = 0; r < model.numRows(); r++) {
             for (int c = 0; c < model.numColumns(); c++) {
                 if (model.pieceAt(r, c) == null) {
                     board[r][c] = new JButton("", null);
                     board[r][c].addActionListener(listener);
-                } else if (model.pieceAt(r, c).player() == Player.WHITE) {
+                } else if (model.pieceAt(r, c).player() ==
+                        Player.WHITE) {
                     placeWhitePieces(r, c);
-                } else if (model.pieceAt(r, c).player() == Player.BLACK)
+                } else if (model.pieceAt(r, c).player() ==
+                        Player.BLACK)
                     placeBlackPieces(r, c);
 
                 setBackGroundColor(r, c);
@@ -96,9 +99,11 @@ public class ChessPanel extends JPanel {
     }
 
     private void setBackGroundColor(int r, int c) {
-        if ((c % 2 == 1 && r % 2 == 0) || (c % 2 == 0 && r % 2 == 1)) {
+        if ((c % 2 == 1 && r % 2 == 0) ||
+                (c % 2 == 0 && r % 2 == 1)) {
             board[r][c].setBackground(Color.LIGHT_GRAY);
-        } else if ((c % 2 == 0 && r % 2 == 0) || (c % 2 == 1 && r % 2 == 1)) {
+        } else if ((c % 2 == 0 && r % 2 == 0) ||
+                (c % 2 == 1 && r % 2 == 1)) {
             board[r][c].setBackground(Color.WHITE);
         }
     }
@@ -184,7 +189,8 @@ public class ChessPanel extends JPanel {
             for (int c = 0; c < 8; c++)
                 if (model.pieceAt(r, c) == null)
                     board[r][c].setIcon(null);
-                else if (model.pieceAt(r, c).player() == Player.WHITE) {
+                else if (model.pieceAt(r, c).player() ==
+                        Player.WHITE) {
                     if (model.pieceAt(r, c).type().equals("Pawn"))
                         board[r][c].setIcon(wPawn);
 
@@ -203,7 +209,8 @@ public class ChessPanel extends JPanel {
                     if (model.pieceAt(r, c).type().equals("King"))
                         board[r][c].setIcon(wKing);
 
-                } else if (model.pieceAt(r, c).player() == Player.BLACK) {
+                } else if (model.pieceAt(r, c).player() ==
+                        Player.BLACK) {
                     if (model.pieceAt(r, c).type().equals("Pawn"))
                         board[r][c].setIcon(bPawn);
 
@@ -262,11 +269,14 @@ public class ChessPanel extends JPanel {
                             toRow = r;
                             toCol = c;
                             firstTurnFlag = true;
-                            Move m = new Move(fromRow, fromCol, toRow, toCol);
+                            Move m = new Move(fromRow, fromCol,
+                                    toRow, toCol);
                             if ((model.isValidMove(m)))
                                 if (model.pieceAt(fromRow, fromCol)
-                                        .player() == model.currentPlayer())
-                                    if (model.getStatus() != GUIcodes.Checkmate) {
+                                        .player() ==
+                                        model.currentPlayer())
+                                    if (model.getStatus() !=
+                                            GUIcodes.Checkmate) {
                                         model.move(m);
 
                                         numMoves++;
@@ -274,10 +284,14 @@ public class ChessPanel extends JPanel {
 
                                         model.setNextPlayer();
 
-                                        if (model.inCheck(model.currentPlayer())) {
-                                            JOptionPane.showMessageDialog(
-                                                    null,
-                                                    model.currentPlayer() + " is in check!");
+                                        if (model.inCheck(model
+                                                .currentPlayer())) {
+                                            JOptionPane
+                                                 .showMessageDialog(
+                                                 null,
+                                                 model.currentPlayer()
+                                                         + " is in " +
+                                                         "check!");
                                         }
 
                                         if (useAI == 0) {
