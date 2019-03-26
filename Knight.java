@@ -14,7 +14,6 @@ public class Knight extends ChessPiece {
 		boolean valid = true;
 
 		//valid move condition for knight: 2 one way, 1 perpindicular
-		//Test for valid movement then invert value to set valid = false
 		// Test for movement within row within range
 		if(!((Math.abs(move.toRow  - move.fromRow) == 1 ||
 				Math.abs(move.toRow  - move.fromRow) == 2)&&
@@ -30,11 +29,10 @@ public class Knight extends ChessPiece {
 						(move.toRow - move.fromRow)) == 3)))
 			valid = false;
 
-		//check to see if the other spot has a piece for the same player
+	//check to see if the other spot has a piece for the same player
 		if (super.sameTeam(move, board))
 			valid = false;
 
-        // More code is needed
 		return valid;
 		
 	}
