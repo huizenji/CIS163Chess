@@ -33,16 +33,9 @@ public class ChessPanel extends JPanel {
     private int numMoves;
     private int numUndos;
     private int useAI;
-    /**
-     * the total number of rows on the chess board
-     **/
+    
     private final int NUM_ROWS = 8;
-
-    /**
-     * the total number of columns on the chess board
-     **/
     private final int NUM_COLS = 8;
-    // declare other instance variables as needed
 
     private listener listener;
     private JButton undoButton;
@@ -333,7 +326,7 @@ public class ChessPanel extends JPanel {
                 }
             }
 
-            //redo button
+            // redo button
             if (event.getSource().equals(redoButton)) {
                 model.redo();
                 numUndos--;
@@ -346,7 +339,6 @@ public class ChessPanel extends JPanel {
             displayBoard();
         }
     }
-
 
     private boolean valid(Move m) {
         if ((model.isValidMove(m)))
@@ -364,4 +356,5 @@ public class ChessPanel extends JPanel {
                     model.currentPlayer() + " is in check!");
         }
     }
+    
 }
