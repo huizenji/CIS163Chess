@@ -189,8 +189,8 @@ public class ChessModel implements IChessModel {
 
         //increment moveIndex for undo and redo
         if (moveIndex < boards.size() - 1)
-            /**must delete everything including current board to
-             prevent double record of current board.**/
+        /**must delete everything including current board to
+         prevent double record of current board.**/
             for (int i = 0; i < boards.size() - (moveIndex); i++) {
                 //delete irrelevant moves
                 deleteMove();
@@ -277,10 +277,6 @@ public class ChessModel implements IChessModel {
         player = player.next();
     }
 
-    public void setPiece(int row, int column, IChessPiece piece) {
-        board[row][column] = piece;
-    }
-
     public void AI() {
         useAI = 1;
 
@@ -324,7 +320,6 @@ public class ChessModel implements IChessModel {
                                 currentPlayer()) {
                             kingRow = row;
                             kingCol = col;
-                            break;
                         }
 
         //try to move King
@@ -352,7 +347,6 @@ public class ChessModel implements IChessModel {
                                 .isValidMove(move, board)) {
                             enemyCol = col;
                             enemyRow = row;
-                            break;
                         }
             }
 
@@ -445,7 +439,7 @@ public class ChessModel implements IChessModel {
             for (int enemyCol = 0; enemyCol < numColumns(); enemyCol++)
                 if (pieceAt(enemyRow, enemyCol) != null)
                     if (pieceAt(enemyRow, enemyCol).player() ==
-                            player.WHITE)
+                            Player.WHITE)
                         if (inDanger(enemyRow, enemyCol)) {
                             for (int allyRow = 0;
                                  allyRow < numRows(); allyRow++)
@@ -456,21 +450,21 @@ public class ChessModel implements IChessModel {
                                         if
                                         (pieceAt(allyRow, allyCol)
                                                 .player() ==
-                                                player.BLACK) {
+                                                Player.BLACK) {
                                             Move move = new Move
                                                     (allyRow, allyCol,
                                                             enemyRow,
                                                             enemyCol);
                                             if (isValidMove(move) &&
                                                     currentPlayer() ==
-                                                        player.BLACK &&
-                                                        !stillInCheck
+                                                            Player.BLACK &&
+                                                    !stillInCheck
                                                             (move)) {
                                                 move(move);
                                                 /**will taking their
                                                  * piece put any of our
                                                  * pieces in danger?
-                                                  */
+                                                 */
 
                                                 if (inDanger(enemyRow,
                                                         enemyCol)) {
@@ -481,7 +475,7 @@ public class ChessModel implements IChessModel {
                                                     undo();
                                                 } else
                                                     setPlayer
-                                                        (Player.WHITE);
+                                                            (Player.WHITE);
 
                                             }
                                         }
@@ -495,8 +489,8 @@ public class ChessModel implements IChessModel {
                             player.BLACK) {
                         Move move = new Move(allyRow, allyCol,
                                 dangerEnemyRow, dangerEnemyCol);
-                        if (isValidMove(move)&& currentPlayer() ==
-                                player.BLACK &&
+                        if (isValidMove(move)&& (currentPlayer() ==
+                                player.BLACK) &&
                                 !stillInCheck(move)) {
                             move(move);
                             setPlayer(Player.WHITE);
@@ -533,8 +527,8 @@ public class ChessModel implements IChessModel {
                                                         .player() ==
                                                         player.WHITE
                                                         &&
-                                                        currentPlayer()
-                                                        == player.BLACK
+                                                        (currentPlayer()
+                                                                == player.BLACK)
                                                         &&
                                                         !stillInCheck
                                                                 (move))
@@ -549,11 +543,11 @@ public class ChessModel implements IChessModel {
                                                     move(move);
                                                     if (!inDanger
                                                             (enemyRow,
-                                                             enemyCol))
+                                                                    enemyCol))
                                                         undo();
                                                     else
                                                         setPlayer
-                                                        (Player.WHITE);
+                                                                (Player.WHITE);
                                                 }
                                 }
                             }
@@ -607,7 +601,7 @@ public class ChessModel implements IChessModel {
      * moves and enabling an undo function if desired.
      *
      * @param board import and save the current board
-     */
+     *****************************************************************/
     private void saveMove(IChessPiece[][] board) {
         //save the board to newboard
         IChessPiece[][] newboard = new IChessPiece[8][8];
@@ -621,7 +615,7 @@ public class ChessModel implements IChessModel {
      * intended to be used on a loop to eliminate all recorded moves
      * after a backed up point: when a new move has been made, delete
      * the old game and continue from the new point
-     */
+     *****************************************************************/
     private void deleteMove() {
         if (!(boards.size() - 1 <= 0))
             boards.remove(boards.size() - 1);
@@ -694,7 +688,7 @@ public class ChessModel implements IChessModel {
         this.status = status;
     }
 
-    public void setPlayer(Player p) {
+    private void setPlayer(Player p) {
         player = p;
     }
 }
