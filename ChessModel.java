@@ -235,7 +235,7 @@ public class ChessModel implements IChessModel {
             for (int col = 0; col < numColumns(); col++)
                 if (board[row][col] != null && board[row][col].type()
                         .equals("King"))
-                    if (pieceAt(row, col).player() == currentPlayer()){
+                    if (pieceAt(row, col).player() == p){
                         toRow = row;
                         toCol = col;
                     }
@@ -399,17 +399,18 @@ public class ChessModel implements IChessModel {
             for (int col = 0; col < numColumns(); col++)
                 for (int toRow = 0; toRow < numRows(); toRow++)
                     for (int toCol = 0; toCol < numColumns(); toCol++)
-                        if (currentPlayer() == Player.BLACK) {
-                            Move move = new Move(row, col, toRow, toCol);
-                            if (pieceAt(row, col) != null)
+                        if (pieceAt(row, col) != null) {
+                            if (pieceAt(row, col).player() == Player.BLACK) {
+                                Move move = new Move(row, col, toRow, toCol);
                                 if (pieceAt(row, col).isValidMove(move, board))
-                                    if (pieceAt(row, col).player() == Player.BLACK && !stillInCheck(move)) {
+                                    if (currentPlayer() == Player.BLACK && !stillInCheck(move)) {
                                         move(move);
                                         if (inCheck(Player.WHITE))
                                             setPlayer(Player.WHITE);
                                         else
                                             undo();
                                     }
+                            }
                         }
 
     }
