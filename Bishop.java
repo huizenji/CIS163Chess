@@ -1,5 +1,12 @@
 package Project3;
 
+/**********************************************************************
+ * A class that stores the information in, and the movement restriction
+ * of a bishop.
+ *
+ * @author David Butz, Lauren Freeman, Jillian Huizenga
+ * Date: 3/26/2019
+ *********************************************************************/
 public class Bishop extends ChessPiece {
 
 	public Bishop(Player player) {
