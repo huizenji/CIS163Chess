@@ -294,6 +294,7 @@ public class ChessPanel extends JPanel {
                                             model.AI();
                                             numMoves++;
                                             numUndos = 0;
+                                            displayCheckMessage();
                                         }
                                     }
                                   // when game is over
