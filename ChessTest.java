@@ -4,8 +4,15 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+/**********************************************************************
+ * A class that tests the ChessModel class with JUnits
+ *
+ * @author David Butz, Lauren Freeman, Jillian Huizenga
+ * Date: 3/26/2019
+ *********************************************************************/
 public class ChessTest {
 
+    // tests pawn movement
     @Test
     public void testPawn() {
         ChessModel model = new ChessModel();
@@ -18,6 +25,7 @@ public class ChessTest {
         assertTrue(model.pieceAt(3, 1).type().equals("Pawn"));
     }
 
+    // tests rook movement
     @Test
     public void testRook() {
         ChessModel model = new ChessModel();
@@ -36,6 +44,7 @@ public class ChessTest {
         assertTrue(model.pieceAt(5, 5).type().equals("Rook"));
     }
 
+    // tests knight movement
     @Test
     public void testKnight() {
         ChessModel model = new ChessModel();
@@ -48,6 +57,7 @@ public class ChessTest {
         assertTrue(model.pieceAt(2, 5).type().equals("Knight"));
     }
 
+    // tests bishop movement
     @Test
     public void testBishop() {
         ChessModel model = new ChessModel();
@@ -64,6 +74,7 @@ public class ChessTest {
 
     }
 
+    // test queen movement
     @Test
     public void testQueen() {
         ChessModel model = new ChessModel();
@@ -90,6 +101,7 @@ public class ChessTest {
         assertTrue(model.pieceAt(4, 4).type().equals("Queen"));
     }
 
+    // test king movement
     @Test
     public void testKing() {
         ChessModel model = new ChessModel();
@@ -111,6 +123,7 @@ public class ChessTest {
         assertTrue(model.pieceAt(1, 5).type().equals("King"));
     }
 
+    // test castling movements
     @Test
     public void testCastling() {
         ChessModel model = new ChessModel();
@@ -130,6 +143,7 @@ public class ChessTest {
         assertTrue(model.pieceAt(0, 5).type().equals("Rook"));
     }
 
+    // test the undo method
     @Test
     public void testUndo() {
         ChessModel model = new ChessModel();
@@ -140,6 +154,7 @@ public class ChessTest {
         assertTrue(model.pieceAt(1, 2).type().equals("Pawn"));
     }
 
+    // test the redo method
     @Test
     public void testRedo() {
         ChessModel model = new ChessModel();
@@ -151,6 +166,7 @@ public class ChessTest {
         assertTrue(model.pieceAt(3, 2).type().equals("Pawn"));
     }
 
+    // test the inCheck() method
     @Test
     public void testInCheck() {
         ChessModel model = new ChessModel();
@@ -164,21 +180,32 @@ public class ChessTest {
         model.move(pawn3);
         model.move(pawn4);
         model.move(queen);
-        assertTrue(model.inCheck(Player.WHITE) == true);
+        assertTrue(model.inCheck(Player.WHITE));
     }
 
+    // test the isComplete() method
     @Test
     public void testIsComplete() {
         ChessModel model = new ChessModel();
-        Move pawn = new Move(1, 5, 2, 5);
-        Move pawn2 = new Move(6, 4, 4, 4);
-        Move pawn3 = new Move(1, 6, 3, 6);
-        Move queen = new Move(7, 3, 3, 7);
+        Move pawn = new Move(6, 5, 4, 5);
+        Move pawn2 = new Move(1, 4, 3, 4);
+        Move pawn3 = new Move(6, 6, 4, 6);
+        Move queen = new Move(0, 3, 4, 7);
         model.move(pawn);
         model.move(pawn2);
         model.move(pawn3);
         model.move(queen);
-        assertTrue(model.isComplete() == true);
+        assertTrue(model.isComplete());
+    }
+
+    // test other methods in ChessModel (set/getStatus, setNextPlayer)
+    @Test
+    public void testExtra(){
+        ChessModel model = new ChessModel();
+        model.setStatus(GUIcodes.Checkmate);
+        model.setNextPlayer();
+        assertTrue(model.getStatus() == GUIcodes.Checkmate);
+        assertTrue(model.currentPlayer() == Player.BLACK);
     }
 
 }
