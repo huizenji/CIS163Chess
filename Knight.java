@@ -1,5 +1,12 @@
 package Project3;
 
+/**********************************************************************
+ * A class that stores the information in, and the movement restriction
+ * of a knight.
+ *
+ * @author David Butz, Lauren Freeman, Jillian Huizenga
+ * Date: 3/26/2019
+ *********************************************************************/
 public class Knight extends ChessPiece {
 
 	public Knight(Player player) {
