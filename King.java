@@ -29,9 +29,10 @@ public class King extends ChessPiece {
 
 		//Test for castle
 		//If the king has not yet moved...
-		if(!super.isMoved())
+		if(!super.isMoved()){
 			//Test to make sure King is not leaving base row
 			if(move.toRow - move.fromRow == 0)
+				if(board[move.toRow][0]!= null)
 				//Queen's side castle
 					if(move.toColumn == 2 &&
 					//... and the rook has not moved
@@ -47,6 +48,7 @@ public class King extends ChessPiece {
 						}
 
 					}
+				if(board[move.toRow][7]!= null)
 				//King's side castle
 					else if(move.toColumn == 6 &&
 					//... and the rook has not moved
@@ -61,7 +63,8 @@ public class King extends ChessPiece {
 								valid = false;
 						}
 					}
-
+		}
+		
 	//check to see if the other spot has a piece for the same player
 		if (super.sameTeam(move, board))
 			valid = false;
