@@ -2,7 +2,7 @@ package Project3;
 
 /**********************************************************************
  * A class that stores the information in, and the movement restriction
- * of a bishop.
+ * of a rook.
  *
  * @author David Butz, Lauren Freeman, Jillian Huizenga
  * Date: 3/26/2019
