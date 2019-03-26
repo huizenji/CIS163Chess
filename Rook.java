@@ -20,30 +20,35 @@ public class Rook extends ChessPiece {
 
 		boolean valid = true;
 
+		//If movement is not straight on one axis, invalid
 		if(!(move.toRow - move.fromRow == 0 ||
 		move.toColumn - move.fromColumn == 0))
-        // More code is needed
 			valid = false;
 
-		//Check the axis for blocking elements
+		//Check the horizontal axis for blocking elements
+		//movement from left to right
 		if(move.toRow > move.fromRow){
 			for(int i = move.fromRow + 1; i < move.toRow; i++)
 				if(board[i][move.fromColumn] != null)
 					valid = false;
 		}
 
-		if(move.toColumn > move.fromColumn){
-			for(int i = move.fromColumn + 1; i < move.toColumn; i++)
-				if(board[move.toRow][i] != null)
-					valid = false;
-		}
-
+		//movement from right to left
 		if(move.toRow < move.fromRow){
 			for(int i = move.fromRow - 1; i > move.toRow; i--)
 				if(board[i][move.fromColumn] != null)
 					valid = false;
 		}
-
+		
+		//Check the vertical axis for blocking elements
+		//movement from top to bottom
+		if(move.toColumn > move.fromColumn){
+			for(int i = move.fromColumn + 1; i < move.toColumn; i++)
+				if(board[move.toRow][i] != null)
+					valid = false;
+		}
+		
+		//movement from bottom to top
 		if(move.toColumn < move.fromColumn){
 			for(int i = move.fromColumn - 1; i > move.toColumn; i--)
 				if(board[move.toRow][i] != null)
@@ -51,13 +56,12 @@ public class Rook extends ChessPiece {
 		}
 
 		//castling concerns
+		//Castle invalid if rook has moved
 		if(board[move.fromRow][move.fromColumn].type().equals("King")
 		&& super.isMoved())
 			valid = false;
 
-
-
-		//check to see if the other spot has a piece for the same player
+	//check to see if the other spot has a piece for the same player
 		if (super.sameTeam(move, board))
 			valid = false;
 
