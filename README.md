@@ -1,2 +1,2 @@
-# Project-3
-CIS 163 Project 3
+# CIS 163 Chess Project
+A chess game with two-player and simple AI functionality.
